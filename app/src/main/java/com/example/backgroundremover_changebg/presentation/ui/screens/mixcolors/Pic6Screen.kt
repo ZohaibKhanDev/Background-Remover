@@ -28,7 +28,10 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.lazy.LazyRow
+import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
@@ -55,6 +58,8 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.draw.blur
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.draw.drawWithContent
+import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.asImageBitmap
 import androidx.compose.ui.graphics.toArgb
@@ -83,10 +88,8 @@ fun Pic6Screen(navController: NavController) {
     val originalBitmap by viewModel.originalBitmap.collectAsState()
     var showOriginalImage by remember { mutableStateOf(true) }
     val scanAnimationOffset = remember { Animatable(0f) }
-    val boxHeight = 700.dp
-    val scannerHeight = 6.dp
-    val context = LocalContext.current
     val revealAnimation = remember { Animatable(0f) }
+    var selectedBg by remember { mutableStateOf<Int?>(null) }
 
     LaunchedEffect(showOriginalImage) {
         if (!showOriginalImage) {
@@ -101,21 +104,25 @@ fun Pic6Screen(navController: NavController) {
         while (showOriginalImage) {
             scanAnimationOffset.animateTo(
                 targetValue = 1f,
-                animationSpec = tween(durationMillis = 1000, easing = LinearEasing)
+                animationSpec = tween(durationMillis = 2500, easing = LinearEasing) // Slower speed
             )
             scanAnimationOffset.animateTo(
                 targetValue = 0f,
-                animationSpec = tween(durationMillis = 1000, easing = LinearEasing)
+                animationSpec = tween(durationMillis = 2500, easing = LinearEasing) // Slower speed
             )
         }
     }
-    var erasedBitmap by remember { mutableStateOf<Bitmap?>(null) }
 
     LaunchedEffect(Unit) {
         delay(5000)
         showOriginalImage = false
     }
 
+    val mixColorBg = listOf(
+        R.drawable.bg1, R.drawable.bg2, R.drawable.bg3, R.drawable.bg4,
+        R.drawable.bg5, R.drawable.bg6, R.drawable.bg7, R.drawable.bg8,
+        R.drawable.bg9, R.drawable.bg10, R.drawable.bg11,
+    )
 
     Scaffold(topBar = {
         TopAppBar(title = { /*TODO*/ }, navigationIcon = {
@@ -124,24 +131,28 @@ fun Pic6Screen(navController: NavController) {
                 color = Color.Blue,
                 modifier = Modifier.clickable { navController.navigateUp() })
         }, actions = {
-            Icon(imageVector = Icons.Outlined.Splitscreen, contentDescription = "")
-            Icon(imageVector = Icons.Outlined.Share, contentDescription = "")
+            Text(text = "Save", color = Color.Magenta)
         }, colors = TopAppBarDefaults.topAppBarColors(containerColor = Color.White))
     }, bottomBar = {
         BottomAppBar(containerColor = Color.White) {
-            Button(
-                onClick = { /*TODO*/ },
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(start = 10.dp, end = 10.dp)
-                    .height(54.dp),
-                colors = ButtonDefaults.buttonColors(containerColor = Color.Blue),
-                shape = RoundedCornerShape(12.dp)
+            LazyRow(
+                modifier = Modifier.fillMaxWidth(),
+                horizontalArrangement = Arrangement.SpaceBetween,
+                verticalAlignment = Alignment.CenterVertically
             ) {
-                Row {
-                    Icon(imageVector = Icons.Outlined.Share, contentDescription = "")
-                    Spacer(modifier = Modifier.width(4.dp))
-                    Text(text = "Export", fontWeight = FontWeight.Medium)
+                items(mixColorBg) { bgResId ->
+                    Image(
+                        painter = painterResource(id = bgResId),
+                        contentDescription = null,
+                        modifier = Modifier
+                            .size(60.dp)
+                            .padding(8.dp)
+                            .clip(CircleShape)
+                            .border(2.dp, Color.LightGray, CircleShape)
+                            .clickable {
+                                selectedBg = bgResId
+                            }
+                    )
                 }
             }
         }
@@ -153,82 +164,71 @@ fun Pic6Screen(navController: NavController) {
             contentAlignment = Alignment.Center
         ) {
             if (showOriginalImage) {
-                Column(
-                    modifier = Modifier.fillMaxWidth(),
-                    verticalArrangement = Arrangement.Center,
-                    horizontalAlignment = Alignment.CenterHorizontally
+                Box(
+                    modifier = Modifier
+                        .size(320.dp)
+                        .clip(CircleShape)
+                        .background(Color.White),
+                    contentAlignment = Alignment.Center
                 ) {
-                    Box(
-                        modifier = Modifier
-                            .width(370.dp)
-                            .height(boxHeight)
-                            .background(Color.White),
-                        contentAlignment = Alignment.Center
-                    ) {
-                        originalBitmap?.let {
-                            Image(
-                                bitmap = it.asImageBitmap(),
-                                contentDescription = "",
-                                contentScale = ContentScale.Crop,
-                                modifier = Modifier
-                                    .fillMaxSize()
-                                    .background(Color.White)
-                                    .clip(RoundedCornerShape(12.dp))
-                            )
-                        }
-
-                        Box(
+                    originalBitmap?.let {
+                        Image(
+                            bitmap = it.asImageBitmap(),
+                            contentDescription = "",
+                            contentScale = ContentScale.Fit,
                             modifier = Modifier
-                                .fillMaxWidth()
-                                .height(scannerHeight)
-                                .offset(y = with(LocalDensity.current) {
-                                    (scanAnimationOffset.value * (boxHeight - scannerHeight)).toPx().dp
-                                })
-                                .background(Color.Blue)
-                                .align(Alignment.TopCenter)
+                                .fillMaxSize()
+                                .clip(CircleShape)
                         )
                     }
+
+                    Box(
+                        modifier = Modifier
+                            .size(320.dp)
+                            .clip(CircleShape)
+                            .background(Color.Transparent)
+                            .drawWithContent {
+                                drawContent()
+                                val scannerPosition = scanAnimationOffset.value * size.height
+                                drawLine(
+                                    color = Color.Blue,
+                                    start = Offset(0f, scannerPosition),
+                                    end = Offset(size.width, scannerPosition),
+                                    strokeWidth = 6.dp.toPx()
+                                )
+                            }
+                    )
                 }
             } else {
                 Box(
                     modifier = Modifier
-                        .width(380.dp)
-                        .height(600.dp)
-                        .border(
-                            BorderStroke(
-                                1.dp,
-                                Color.LightGray
-                            ), shape = RoundedCornerShape(13.dp)
-                        ), contentAlignment = Alignment.Center
+                        .size(320.dp)
+                        .clip(CircleShape)
+                        .background(Color.White)
+                        .border(BorderStroke(1.dp, Color.LightGray), CircleShape),
+                    contentAlignment = Alignment.Center
                 ) {
-                    Box(
+                    Image(
+                        painter = painterResource(id = selectedBg ?: R.drawable.bg6),
+                        contentDescription = null,
+                        contentScale = ContentScale.Crop,
                         modifier = Modifier
+                            .fillMaxSize()
                             .clip(CircleShape)
-                            .width(370.dp)
-                            .height(boxHeight)
-                            .background(Color.White),
-                        contentAlignment = Alignment.Center
-                    ) {
-                        Image(
-                            painter = painterResource(id = R.drawable.bg6),
-                            contentDescription = "",
-                            contentScale = ContentScale.Crop
-                        )
+                    )
 
-                        bgRemovedBitmap?.let {
-                            Image(
-                                bitmap = it.asImageBitmap(),
-                                contentDescription = "",
-                                contentScale = ContentScale.Crop,
-                                modifier = Modifier
-                                    .fillMaxSize()
-                                    .clip(RoundedCornerShape(12.dp))
-                                    .alpha(revealAnimation.value)
-                            )
-                        }
+                    bgRemovedBitmap?.let {
+                        Image(
+                            bitmap = it.asImageBitmap(),
+                            contentDescription = "",
+                            contentScale = ContentScale.Crop,
+                            modifier = Modifier
+                                .fillMaxSize()
+                                .clip(CircleShape)
+                                .alpha(revealAnimation.value)
+                        )
                     }
                 }
-
             }
         }
     }
