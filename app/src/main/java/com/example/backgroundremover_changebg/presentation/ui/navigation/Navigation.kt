@@ -23,7 +23,6 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
-import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.text.font.FontWeight
@@ -37,7 +36,7 @@ import com.example.backgroundremover_changebg.presentation.ui.screens.CreateScre
 import com.example.backgroundremover_changebg.presentation.ui.screens.TeamsScreen
 import com.example.backgroundremover_changebg.presentation.ui.screens.Your_Content_Screen
 import com.example.backgroundremover_changebg.presentation.ui.screens.bgdetail.BgDetailScreen
-import com.example.backgroundremover_changebg.presentation.ui.screens.bgdetail.BlurScreen
+import com.example.backgroundremover_changebg.presentation.ui.screens.blur.BlurScreen
 import com.example.backgroundremover_changebg.presentation.ui.screens.colors.ColorsBgDetail
 import com.example.backgroundremover_changebg.presentation.ui.screens.bgdetail.CropScreen
 import com.example.backgroundremover_changebg.presentation.ui.screens.colors.BlackColorBgDetail
