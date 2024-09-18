@@ -45,7 +45,7 @@ import org.koin.compose.koinInject
 @OptIn(ExperimentalMaterial3Api::class)
 @SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")
 @Composable
-fun BlurScreen(navController: NavController) {
+fun ColorSplash(navController: NavController) {
     val viewModel: MainViewModel = koinInject()
     val bitmap by viewModel.originalBitmap.collectAsState()
 
@@ -106,15 +106,24 @@ fun BlurScreen(navController: NavController) {
                         .clip(RoundedCornerShape(16.dp))
                         .background(Color.White)
                 ) {
+
+
                     Image(
                         bitmap = it.asImageBitmap(),
                         contentDescription = "",
                         contentScale = ContentScale.Crop,
                         modifier = Modifier
                             .fillMaxSize()
-                            .blur(if (isBlurred) 3.dp else 0.dp)
                             .clip(RoundedCornerShape(16.dp))
                     )
+                    if (isBlurred) {
+                        Box(
+                            modifier = Modifier
+                                .fillMaxSize()
+                                .background(Color.Black.copy(alpha = 0.30f)),
+                            contentAlignment = Alignment.Center
+                        ) {}
+                    }
 
                     if (!isBlurred) {
                         Box(

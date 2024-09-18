@@ -80,6 +80,11 @@ fun CreateScreen(navController: NavController) {
     var TransparentColorsInputImage by remember { mutableStateOf<Bitmap?>(null) }
     var originalColorsInputImage by remember { mutableStateOf<Bitmap?>(null) }
     var BlurInputImage by remember { mutableStateOf<Bitmap?>(null) }
+    var motionInputImage by remember { mutableStateOf<Bitmap?>(null) }
+    var lowKeyInputImage by remember { mutableStateOf<Bitmap?>(null) }
+    var heighKeyInputImage by remember { mutableStateOf<Bitmap?>(null) }
+    var sepiaInputImage by remember { mutableStateOf<Bitmap?>(null) }
+    var ColorSplashInputImage by remember { mutableStateOf<Bitmap?>(null) }
     var pic1InputImage by remember { mutableStateOf<Bitmap?>(null) }
     var pic2InputImage by remember { mutableStateOf<Bitmap?>(null) }
     var pic3InputImage by remember { mutableStateOf<Bitmap?>(null) }
@@ -230,6 +235,113 @@ fun CreateScreen(navController: NavController) {
                     BlurInputImage = output
                     sharedViewModel.setBgRemovedBitmap(BlurInputImage!!)
                     navController.navigate(Screens.BlursScreen.route)
+                }
+            }
+        }
+    }
+
+
+    val colorSplashLauncher = rememberLauncherForActivityResult(
+        contract = ActivityResultContracts.GetContent()
+    ) { uri: Uri? ->
+        uri?.let {
+            val bitmap = BitmapFactory.decodeStream(
+                context.contentResolver.openInputStream(it)
+            )
+            ColorSplashInputImage = bitmap
+            sharedViewModel.setOriginalBitmap(ColorSplashInputImage!!)
+
+            coroutineScope.launch {
+                val remover = RemoveBg(context)
+                remover.clearBackground(ColorSplashInputImage!!).collect { output ->
+                    ColorSplashInputImage = output
+                    sharedViewModel.setBgRemovedBitmap(ColorSplashInputImage!!)
+                    navController.navigate(Screens.ColorSplash.route)
+                }
+            }
+        }
+    }
+
+
+    val MotionLauncher = rememberLauncherForActivityResult(
+        contract = ActivityResultContracts.GetContent()
+    ) { uri: Uri? ->
+        uri?.let {
+            val bitmap = BitmapFactory.decodeStream(
+                context.contentResolver.openInputStream(it)
+            )
+            motionInputImage = bitmap
+            sharedViewModel.setOriginalBitmap(motionInputImage!!)
+
+            coroutineScope.launch {
+                val remover = RemoveBg(context)
+                remover.clearBackground(motionInputImage!!).collect { output ->
+                    motionInputImage = output
+                    sharedViewModel.setBgRemovedBitmap(motionInputImage!!)
+                    navController.navigate(Screens.MotionBlur.route)
+                }
+            }
+        }
+    }
+
+    val LowKeyLauncher = rememberLauncherForActivityResult(
+        contract = ActivityResultContracts.GetContent()
+    ) { uri: Uri? ->
+        uri?.let {
+            val bitmap = BitmapFactory.decodeStream(
+                context.contentResolver.openInputStream(it)
+            )
+            lowKeyInputImage = bitmap
+            sharedViewModel.setOriginalBitmap(lowKeyInputImage!!)
+
+            coroutineScope.launch {
+                val remover = RemoveBg(context)
+                remover.clearBackground(lowKeyInputImage!!).collect { output ->
+                    lowKeyInputImage = output
+                    sharedViewModel.setBgRemovedBitmap(lowKeyInputImage!!)
+                    navController.navigate(Screens.LowKey.route)
+                }
+            }
+        }
+    }
+
+    val HeighKeyLauncher = rememberLauncherForActivityResult(
+        contract = ActivityResultContracts.GetContent()
+    ) { uri: Uri? ->
+        uri?.let {
+            val bitmap = BitmapFactory.decodeStream(
+                context.contentResolver.openInputStream(it)
+            )
+            heighKeyInputImage = bitmap
+            sharedViewModel.setOriginalBitmap(heighKeyInputImage!!)
+
+            coroutineScope.launch {
+                val remover = RemoveBg(context)
+                remover.clearBackground(heighKeyInputImage!!).collect { output ->
+                    heighKeyInputImage = output
+                    sharedViewModel.setBgRemovedBitmap(heighKeyInputImage!!)
+                    navController.navigate(Screens.HeighKey.route)
+                }
+            }
+        }
+    }
+
+    val sepiaLauncher = rememberLauncherForActivityResult(
+        contract = ActivityResultContracts.GetContent()
+    ) { uri: Uri? ->
+        uri?.let {
+            val bitmap = BitmapFactory.decodeStream(
+                context.contentResolver.openInputStream(it)
+            )
+            sepiaInputImage = bitmap
+            sharedViewModel.setOriginalBitmap(sepiaInputImage!!)
+
+            coroutineScope.launch {
+                val remover = RemoveBg(context)
+                remover.clearBackground(sepiaInputImage!!).collect { output ->
+                    sepiaInputImage = output
+                    sharedViewModel.setBgRemovedBitmap(sepiaInputImage!!)
+                    navController.navigate(Screens.Sepia.route)
                 }
             }
         }
@@ -666,6 +778,11 @@ fun CreateScreen(navController: NavController) {
                                         .clickable {
                                             when (option.name) {
                                                 "Blur" -> BlurLauncher.launch("image/*")
+                                                "Color Splash" -> colorSplashLauncher.launch("image/*")
+                                                "Motion" -> MotionLauncher.launch("image/*")
+                                                "Low Key" -> LowKeyLauncher.launch("image/*")
+                                                "Heigh Key" -> HeighKeyLauncher.launch("image/*")
+                                                "Sepia" -> sepiaLauncher.launch("image/*")
 
                                             }
                                         },

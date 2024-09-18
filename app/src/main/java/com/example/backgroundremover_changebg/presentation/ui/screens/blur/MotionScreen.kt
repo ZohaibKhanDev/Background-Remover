@@ -33,10 +33,12 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.asImageBitmap
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalDensity
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
+import com.example.backgroundremover_changebg.R
 import com.example.backgroundremover_changebg.presentation.viewmodel.MainViewModel
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
@@ -45,9 +47,9 @@ import org.koin.compose.koinInject
 @OptIn(ExperimentalMaterial3Api::class)
 @SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")
 @Composable
-fun BlurScreen(navController: NavController) {
+fun MotionScreen(navController: NavController) {
     val viewModel: MainViewModel = koinInject()
-    val bitmap by viewModel.originalBitmap.collectAsState()
+    val bitmap by viewModel.bgRemovedBitmap.collectAsState()
 
     var isBlurred by remember { mutableStateOf(false) }
     val scanAnimationOffset = remember { Animatable(0f) }
@@ -106,15 +108,31 @@ fun BlurScreen(navController: NavController) {
                         .clip(RoundedCornerShape(16.dp))
                         .background(Color.White)
                 ) {
+
+                    if (isBlurred) {
+                        Box(
+                            modifier = Modifier
+                                .fillMaxSize(),
+                            contentAlignment = Alignment.Center
+                        ) {
+                            Image(
+                                painter = painterResource(id = R.drawable.motionblur),
+                                contentDescription = "",
+                                contentScale = ContentScale.Crop,
+                                modifier = Modifier.fillMaxSize()
+                            )
+                        }
+                    }
+
                     Image(
                         bitmap = it.asImageBitmap(),
                         contentDescription = "",
                         contentScale = ContentScale.Crop,
                         modifier = Modifier
                             .fillMaxSize()
-                            .blur(if (isBlurred) 3.dp else 0.dp)
                             .clip(RoundedCornerShape(16.dp))
                     )
+
 
                     if (!isBlurred) {
                         Box(

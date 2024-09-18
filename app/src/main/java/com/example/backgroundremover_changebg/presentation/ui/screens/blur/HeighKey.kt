@@ -30,6 +30,8 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.blur
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.ColorFilter
+import androidx.compose.ui.graphics.ColorMatrix
 import androidx.compose.ui.graphics.asImageBitmap
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalDensity
@@ -45,17 +47,15 @@ import org.koin.compose.koinInject
 @OptIn(ExperimentalMaterial3Api::class)
 @SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")
 @Composable
-fun BlurScreen(navController: NavController) {
+fun HeighKeyScreen(navController: NavController) {
     val viewModel: MainViewModel = koinInject()
     val bitmap by viewModel.originalBitmap.collectAsState()
-
-    var isBlurred by remember { mutableStateOf(false) }
+    var isScanComplete by remember { mutableStateOf(false) }
     val scanAnimationOffset = remember { Animatable(0f) }
-
 
     LaunchedEffect(Unit) {
         launch {
-            while (!isBlurred) {
+            while (!isScanComplete) {
                 scanAnimationOffset.animateTo(
                     targetValue = 1f,
                     animationSpec = tween(durationMillis = 1000, easing = LinearEasing)
@@ -67,22 +67,17 @@ fun BlurScreen(navController: NavController) {
             }
         }
 
-
         delay(7000)
-        isBlurred = true
+        isScanComplete = true
     }
 
     Scaffold(topBar = {
         TopAppBar(
             title = {},
             navigationIcon = {
-                Text(
-                    text = "Cancel",
-                    fontSize = 16.sp,
-                    fontWeight = FontWeight.SemiBold,
-                    modifier = Modifier.clickable {
-                        navController.navigateUp()
-                    })
+                Text(text = "Cancel", fontSize = 16.sp, fontWeight = FontWeight.SemiBold, modifier = Modifier.clickable {
+                    navController.navigateUp()
+                })
             },
             actions = {
                 Text(text = "Save", color = Color.Magenta, modifier = Modifier.clickable {
@@ -112,11 +107,19 @@ fun BlurScreen(navController: NavController) {
                         contentScale = ContentScale.Crop,
                         modifier = Modifier
                             .fillMaxSize()
-                            .blur(if (isBlurred) 3.dp else 0.dp)
-                            .clip(RoundedCornerShape(16.dp))
+                            .clip(RoundedCornerShape(16.dp)),
+                        colorFilter = if (isScanComplete) {
+                            ColorFilter.colorMatrix(ColorMatrix().apply {
+                                setToSaturation(0f)
+                            })
+                        } else {
+
+                            null
+                        }
                     )
 
-                    if (!isBlurred) {
+
+                    if (!isScanComplete) {
                         Box(
                             modifier = Modifier
                                 .fillMaxWidth()

@@ -39,6 +39,11 @@ import com.example.backgroundremover_changebg.presentation.ui.screens.bgdetail.B
 import com.example.backgroundremover_changebg.presentation.ui.screens.blur.BlurScreen
 import com.example.backgroundremover_changebg.presentation.ui.screens.colors.ColorsBgDetail
 import com.example.backgroundremover_changebg.presentation.ui.screens.bgdetail.CropScreen
+import com.example.backgroundremover_changebg.presentation.ui.screens.blur.ColorSplash
+import com.example.backgroundremover_changebg.presentation.ui.screens.blur.HeighKeyScreen
+import com.example.backgroundremover_changebg.presentation.ui.screens.blur.LowKey
+import com.example.backgroundremover_changebg.presentation.ui.screens.blur.MotionScreen
+import com.example.backgroundremover_changebg.presentation.ui.screens.blur.SepiaScreen
 import com.example.backgroundremover_changebg.presentation.ui.screens.colors.BlackColorBgDetail
 import com.example.backgroundremover_changebg.presentation.ui.screens.colors.OriginalColorBgDetail
 import com.example.backgroundremover_changebg.presentation.ui.screens.colors.TransparentColorBgDetail
@@ -110,6 +115,26 @@ fun Navigation(navController: NavHostController) {
         composable(Screens.OriginalColor.route) {
             OriginalColorBgDetail(navController = navController)
         }
+
+        composable(Screens.ColorSplash.route) {
+            ColorSplash(navController)
+        }
+
+        composable(Screens.MotionBlur.route) {
+            MotionScreen(navController = navController)
+        }
+
+        composable(Screens.LowKey.route) {
+            LowKey(navController = navController)
+        }
+
+        composable(Screens.HeighKey.route) {
+            HeighKeyScreen(navController = navController)
+        }
+
+        composable(Screens.Sepia.route) {
+            SepiaScreen(navController = navController)
+        }
     }
 }
 
@@ -137,6 +162,11 @@ fun NavEntry() {
         currentRoute?.startsWith(Screens.BlackColor.route) == true -> false
         currentRoute?.startsWith(Screens.TransparentColor.route) == true -> false
         currentRoute?.startsWith(Screens.OriginalColor.route) == true -> false
+        currentRoute?.startsWith(Screens.ColorSplash.route) == true -> false
+        currentRoute?.startsWith(Screens.MotionBlur.route) == true -> false
+        currentRoute?.startsWith(Screens.LowKey.route) == true -> false
+        currentRoute?.startsWith(Screens.HeighKey.route) == true -> false
+        currentRoute?.startsWith(Screens.Sepia.route) == true -> false
         else -> true
     }
 
@@ -276,6 +306,42 @@ sealed class Screens(
         selectedIcon = Icons.Filled.Details,
         unSelectedIcon = Icons.Outlined.Details
     )
+
+    object ColorSplash : Screens(
+        "ColorSplash",
+        "ColorSplash",
+        selectedIcon = Icons.Filled.Details,
+        unSelectedIcon = Icons.Outlined.Details
+    )
+
+    object MotionBlur : Screens(
+        "MotionBlur",
+        "MotionBlur",
+        selectedIcon = Icons.Filled.Details,
+        unSelectedIcon = Icons.Outlined.Details
+    )
+
+    object LowKey : Screens(
+        "LowKey",
+        "LowKey",
+        selectedIcon = Icons.Filled.Details,
+        unSelectedIcon = Icons.Outlined.Details
+    )
+
+    object HeighKey : Screens(
+        "HeighKey",
+        "HeighKey",
+        selectedIcon = Icons.Filled.Details,
+        unSelectedIcon = Icons.Outlined.Details
+    )
+
+    object Sepia : Screens(
+        "Sepia",
+        "Sepia",
+        selectedIcon = Icons.Filled.Details,
+        unSelectedIcon = Icons.Outlined.Details
+    )
+
 }
 
 @Composable
