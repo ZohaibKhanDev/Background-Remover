@@ -54,11 +54,12 @@ fun LowKey(navController: NavController) {
     val scanAnimationOffset = remember { Animatable(0f) }
 
     val contrast = 1f
-    val brightness = -180f
+    val brightness = 0f
+
     val colorMatrix = floatArrayOf(
-        contrast, 0f, 0f, 0f, brightness,
-        0f, contrast, 0f, 0f, brightness,
-        0f, 0f, contrast, 0f, brightness,
+        0.33f * contrast, 0.33f * contrast, 0.33f * contrast, 0f, brightness,
+        0.33f * contrast, 0.33f * contrast, 0.33f * contrast, 0f, brightness,
+        0.33f * contrast, 0.33f * contrast, 0.33f * contrast, 0f, brightness,
         0f, 0f, 0f, 1f, 0f
     )
 

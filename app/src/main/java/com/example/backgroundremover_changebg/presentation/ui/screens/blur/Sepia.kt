@@ -1,6 +1,8 @@
 package com.example.backgroundremover_changebg.presentation.ui.screens.blur
 
 import android.annotation.SuppressLint
+import android.graphics.Bitmap
+import android.graphics.ColorMatrix
 import androidx.compose.animation.core.Animatable
 import androidx.compose.animation.core.LinearEasing
 import androidx.compose.animation.core.tween
@@ -29,8 +31,11 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.blur
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.graphics.Canvas
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.graphics.asImageBitmap
+import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.text.font.FontWeight
@@ -51,6 +56,16 @@ fun SepiaScreen(navController: NavController) {
 
     var isBlurred by remember { mutableStateOf(false) }
     val scanAnimationOffset = remember { Animatable(0f) }
+
+    val sepiaColorMatrix = androidx.compose.ui.graphics.ColorMatrix(
+        floatArrayOf(
+            0.393f, 0.769f, 0.189f, 0f, 0f,
+            0.349f, 0.686f, 0.168f, 0f, 0f,
+            0.272f, 0.534f, 0.131f, 0f, 0f,
+            0f, 0f, 0f, 1f, 0f
+        )
+    )
+    val sepiaColorFilter = androidx.compose.ui.graphics.ColorFilter.colorMatrix(sepiaColorMatrix)
 
 
     LaunchedEffect(Unit) {
@@ -97,7 +112,7 @@ fun SepiaScreen(navController: NavController) {
                 .padding(top = it.calculateTopPadding()),
             contentAlignment = Alignment.Center
         ) {
-            bitmap?.let {
+            bitmap?.let { originalBitmap ->
                 Box(
                     modifier = Modifier
                         .fillMaxWidth()
@@ -106,24 +121,15 @@ fun SepiaScreen(navController: NavController) {
                         .clip(RoundedCornerShape(16.dp))
                         .background(Color.White)
                 ) {
-
-
                     Image(
-                        bitmap = it.asImageBitmap(),
+                        bitmap = originalBitmap.asImageBitmap(),
                         contentDescription = "",
                         contentScale = ContentScale.Crop,
                         modifier = Modifier
                             .fillMaxSize()
-                            .clip(RoundedCornerShape(16.dp))
+                            .clip(RoundedCornerShape(16.dp)),
+                        colorFilter = if (isBlurred) sepiaColorFilter else null
                     )
-                    if (isBlurred) {
-                        Box(
-                            modifier = Modifier
-                                .fillMaxSize()
-                                .background(Color.Black.copy(alpha = 0.30f)),
-                            contentAlignment = Alignment.Center
-                        ) {}
-                    }
 
                     if (!isBlurred) {
                         Box(
@@ -141,6 +147,8 @@ fun SepiaScreen(navController: NavController) {
         }
     }
 }
+
+
 
 
 
