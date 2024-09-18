@@ -23,6 +23,7 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
+import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.text.font.FontWeight
@@ -37,8 +38,11 @@ import com.example.backgroundremover_changebg.presentation.ui.screens.TeamsScree
 import com.example.backgroundremover_changebg.presentation.ui.screens.Your_Content_Screen
 import com.example.backgroundremover_changebg.presentation.ui.screens.bgdetail.BgDetailScreen
 import com.example.backgroundremover_changebg.presentation.ui.screens.bgdetail.BlurScreen
-import com.example.backgroundremover_changebg.presentation.ui.screens.bgdetail.ColorsBgDetail
+import com.example.backgroundremover_changebg.presentation.ui.screens.colors.ColorsBgDetail
 import com.example.backgroundremover_changebg.presentation.ui.screens.bgdetail.CropScreen
+import com.example.backgroundremover_changebg.presentation.ui.screens.colors.BlackColorBgDetail
+import com.example.backgroundremover_changebg.presentation.ui.screens.colors.OriginalColorBgDetail
+import com.example.backgroundremover_changebg.presentation.ui.screens.colors.TransparentColorBgDetail
 import com.example.backgroundremover_changebg.presentation.ui.screens.mixcolors.Pic1Screen
 import com.example.backgroundremover_changebg.presentation.ui.screens.mixcolors.Pic2Screen
 import com.example.backgroundremover_changebg.presentation.ui.screens.mixcolors.Pic3Screen
@@ -97,12 +101,23 @@ fun Navigation(navController: NavHostController) {
             Pic6Screen(navController = navController)
         }
 
+        composable(Screens.BlackColor.route) {
+            BlackColorBgDetail(navController = navController)
+        }
+
+        composable(Screens.TransparentColor.route) {
+            TransparentColorBgDetail(navController = navController)
+        }
+        composable(Screens.OriginalColor.route) {
+            OriginalColorBgDetail(navController = navController)
+        }
     }
 }
 
 @SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")
 @Composable
 fun NavEntry() {
+
     val navController = rememberNavController()
     var showBottomNav by remember { mutableStateOf(true) }
     val navBackStackEntry by navController.currentBackStackEntryAsState()
@@ -120,6 +135,9 @@ fun NavEntry() {
         currentRoute?.startsWith(Screens.Pic4Screen.route) == true -> false
         currentRoute?.startsWith(Screens.Pic5Screen.route) == true -> false
         currentRoute?.startsWith(Screens.Pic6Screen.route) == true -> false
+        currentRoute?.startsWith(Screens.BlackColor.route) == true -> false
+        currentRoute?.startsWith(Screens.TransparentColor.route) == true -> false
+        currentRoute?.startsWith(Screens.OriginalColor.route) == true -> false
         else -> true
     }
 
@@ -238,6 +256,27 @@ sealed class Screens(
         selectedIcon = Icons.Filled.Details,
         unSelectedIcon = Icons.Outlined.Details
     )
+
+    object BlackColor : Screens(
+        "BlackColor",
+        "BlackColor",
+        selectedIcon = Icons.Filled.Details,
+        unSelectedIcon = Icons.Outlined.Details
+    )
+
+    object TransparentColor : Screens(
+        "TransparentColor",
+        "TransparentColor",
+        selectedIcon = Icons.Filled.Details,
+        unSelectedIcon = Icons.Outlined.Details
+    )
+
+    object OriginalColor : Screens(
+        "OriginalColor",
+        "OriginalColor",
+        selectedIcon = Icons.Filled.Details,
+        unSelectedIcon = Icons.Outlined.Details
+    )
 }
 
 @Composable
@@ -282,5 +321,4 @@ fun BottomNavigation(
             }, colors = NavigationBarItemDefaults.colors(indicatorColor = Color.Transparent))
         }
     }
-
 }

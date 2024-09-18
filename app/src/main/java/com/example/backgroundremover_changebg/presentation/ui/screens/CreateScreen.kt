@@ -75,7 +75,10 @@ fun CreateScreen(navController: NavController) {
     val context = LocalContext.current
     var inputImage by remember { mutableStateOf<Bitmap?>(null) }
     var outputImage by remember { mutableStateOf<Bitmap?>(null) }
-    var colorsInputImage by remember { mutableStateOf<Bitmap?>(null) }
+    var WhiteColorsInputImage by remember { mutableStateOf<Bitmap?>(null) }
+    var BlackColorsInputImage by remember { mutableStateOf<Bitmap?>(null) }
+    var TransparentColorsInputImage by remember { mutableStateOf<Bitmap?>(null) }
+    var originalColorsInputImage by remember { mutableStateOf<Bitmap?>(null) }
     var BlurInputImage by remember { mutableStateOf<Bitmap?>(null) }
     var pic1InputImage by remember { mutableStateOf<Bitmap?>(null) }
     var pic2InputImage by remember { mutableStateOf<Bitmap?>(null) }
@@ -116,26 +119,92 @@ fun CreateScreen(navController: NavController) {
         }
     }
 
-    val colorsLauncher = rememberLauncherForActivityResult(
+    val whiteColorsLauncher = rememberLauncherForActivityResult(
         contract = ActivityResultContracts.GetContent()
     ) { uri: Uri? ->
         uri?.let {
             val bitmap = BitmapFactory.decodeStream(
                 context.contentResolver.openInputStream(it)
             )
-            colorsInputImage = bitmap
-            sharedViewModel.setOriginalBitmap(colorsInputImage!!)
+            WhiteColorsInputImage = bitmap
+            sharedViewModel.setOriginalBitmap(WhiteColorsInputImage!!)
 
             coroutineScope.launch {
                 val remover = RemoveBg(context)
-                remover.clearBackground(colorsInputImage!!).collect { output ->
-                    colorsInputImage = output
-                    sharedViewModel.setBgRemovedBitmap(colorsInputImage!!)
-                    navController.navigate(Screens.Pic1Screen.route)
+                remover.clearBackground(WhiteColorsInputImage!!).collect { output ->
+                    WhiteColorsInputImage = output
+                    sharedViewModel.setBgRemovedBitmap(WhiteColorsInputImage!!)
+                    navController.navigate(Screens.ColorsBgDetail.route)
                 }
             }
         }
     }
+
+
+    val blackColorsLauncher = rememberLauncherForActivityResult(
+        contract = ActivityResultContracts.GetContent()
+    ) { uri: Uri? ->
+        uri?.let {
+            val bitmap = BitmapFactory.decodeStream(
+                context.contentResolver.openInputStream(it)
+            )
+            BlackColorsInputImage = bitmap
+            sharedViewModel.setOriginalBitmap(BlackColorsInputImage!!)
+
+            coroutineScope.launch {
+                val remover = RemoveBg(context)
+                remover.clearBackground(BlackColorsInputImage!!).collect { output ->
+                    BlackColorsInputImage = output
+                    sharedViewModel.setBgRemovedBitmap(BlackColorsInputImage!!)
+                    navController.navigate(Screens.BlackColor.route)
+                }
+            }
+        }
+    }
+
+    val transparentColorsLauncher = rememberLauncherForActivityResult(
+        contract = ActivityResultContracts.GetContent()
+    ) { uri: Uri? ->
+        uri?.let {
+            val bitmap = BitmapFactory.decodeStream(
+                context.contentResolver.openInputStream(it)
+            )
+            TransparentColorsInputImage = bitmap
+            sharedViewModel.setOriginalBitmap(TransparentColorsInputImage!!)
+
+            coroutineScope.launch {
+                val remover = RemoveBg(context)
+                remover.clearBackground(TransparentColorsInputImage!!).collect { output ->
+                    TransparentColorsInputImage = output
+                    sharedViewModel.setBgRemovedBitmap(TransparentColorsInputImage!!)
+                    navController.navigate(Screens.TransparentColor.route)
+                }
+            }
+        }
+    }
+
+    val originalColorsLauncher = rememberLauncherForActivityResult(
+        contract = ActivityResultContracts.GetContent()
+    ) { uri: Uri? ->
+        uri?.let {
+            val bitmap = BitmapFactory.decodeStream(
+                context.contentResolver.openInputStream(it)
+            )
+            originalColorsInputImage = bitmap
+            sharedViewModel.setOriginalBitmap(originalColorsInputImage!!)
+
+            coroutineScope.launch {
+                val remover = RemoveBg(context)
+                remover.clearBackground(originalColorsInputImage!!).collect { output ->
+                    originalColorsInputImage = output
+                    sharedViewModel.setBgRemovedBitmap(originalColorsInputImage!!)
+                    navController.navigate(Screens.OriginalColor.route)
+                }
+            }
+        }
+    }
+
+
     val thirdRowItems = listOf(
         EditingOption("", R.drawable.pic1),
         EditingOption("", R.drawable.pic2),
@@ -521,7 +590,10 @@ fun CreateScreen(navController: NavController) {
                                         .background(Color(0XFF9eaaf7).copy(alpha = 0.20f))
                                         .clickable {
                                             when (option.name) {
-                                                "White" -> colorsLauncher.launch("image/*")
+                                                "White" -> whiteColorsLauncher.launch("image/*")
+                                                "Black" -> blackColorsLauncher.launch("image/*")
+                                                "Transparent" -> transparentColorsLauncher.launch("image/*")
+                                                "Original" -> originalColorsLauncher.launch("image/*")
 
                                             }
                                         },
