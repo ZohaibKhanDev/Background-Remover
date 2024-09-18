@@ -61,7 +61,7 @@ fun BatchScreen(navController: NavController) {
         LazyColumn(
             modifier = Modifier
                 .fillMaxSize()
-                .padding(top = paddingValues.calculateTopPadding(), bottom = 90.dp)
+                .padding(top = paddingValues.calculateTopPadding(), bottom = 120.dp)
                 .background(Color.White),
             verticalArrangement = Arrangement.spacedBy(22.dp),
             horizontalAlignment = Alignment.CenterHorizontally
