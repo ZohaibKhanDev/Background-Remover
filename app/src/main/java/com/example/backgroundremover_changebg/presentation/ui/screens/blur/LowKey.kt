@@ -30,6 +30,8 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.blur
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.ColorFilter
+import androidx.compose.ui.graphics.ColorMatrix
 import androidx.compose.ui.graphics.asImageBitmap
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalDensity
@@ -48,16 +50,23 @@ import org.koin.compose.koinInject
 fun LowKey(navController: NavController) {
     val viewModel: MainViewModel = koinInject()
     val bitmap by viewModel.originalBitmap.collectAsState()
-
-    var isBlurred by remember { mutableStateOf(false) }
+    var isScanComplete by remember { mutableStateOf(false) }
     val scanAnimationOffset = remember { Animatable(0f) }
 
+    val contrast = 1f
+    val brightness = -180f
+    val colorMatrix = floatArrayOf(
+        contrast, 0f, 0f, 0f, brightness,
+        0f, contrast, 0f, 0f, brightness,
+        0f, 0f, contrast, 0f, brightness,
+        0f, 0f, 0f, 1f, 0f
+    )
 
-    val grayscaleOverlayColor = Color.Black.copy(alpha = 0.6f)
+
 
     LaunchedEffect(Unit) {
         launch {
-            while (!isBlurred) {
+            while (!isScanComplete) {
                 scanAnimationOffset.animateTo(
                     targetValue = 1f,
                     animationSpec = tween(durationMillis = 1000, easing = LinearEasing)
@@ -70,7 +79,7 @@ fun LowKey(navController: NavController) {
         }
 
         delay(7000)
-        isBlurred = true
+        isScanComplete = true
     }
 
 
@@ -114,11 +123,18 @@ fun LowKey(navController: NavController) {
                         contentScale = ContentScale.Crop,
                         modifier = Modifier
                             .fillMaxSize()
-                            .clip(RoundedCornerShape(16.dp))
+                            .clip(RoundedCornerShape(16.dp)),
+                        colorFilter = if (isScanComplete) ColorFilter.colorMatrix(
+                            ColorMatrix(
+                                colorMatrix
+                            )
+                        ) else {
+                            null
+                        }
                     )
 
 
-                    if (!isBlurred) {
+                    if (!isScanComplete) {
                         Box(
                             modifier = Modifier
                                 .fillMaxWidth()
