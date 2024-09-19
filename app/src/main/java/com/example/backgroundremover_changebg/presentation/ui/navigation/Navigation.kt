@@ -54,6 +54,7 @@ import com.example.backgroundremover_changebg.presentation.ui.screens.mixcolors.
 import com.example.backgroundremover_changebg.presentation.ui.screens.mixcolors.Pic5Screen
 import com.example.backgroundremover_changebg.presentation.ui.screens.mixcolors.Pic6Screen
 import com.example.backgroundremover_changebg.presentation.ui.screens.socialmedia.InstagramPost
+import com.example.backgroundremover_changebg.presentation.ui.screens.socialmedia.InstagramReel
 import com.example.backgroundremover_changebg.presentation.ui.screens.socialmedia.InstagramStory
 
 @Composable
@@ -146,7 +147,7 @@ fun Navigation(navController: NavHostController) {
             InstagramPost(navController = navController)
         }
         composable(Screens.InstagramReel.route) {
-
+            InstagramReel(navController = navController)
         }
 
         composable(Screens.FacebookPost.route) {

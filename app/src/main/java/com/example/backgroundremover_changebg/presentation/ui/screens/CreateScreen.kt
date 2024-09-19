@@ -76,6 +76,7 @@ fun CreateScreen(navController: NavController) {
     var inputImage by remember { mutableStateOf<Bitmap?>(null) }
     var InstagramStoryImage by remember { mutableStateOf<Bitmap?>(null) }
     var InstagramPostImage by remember { mutableStateOf<Bitmap?>(null) }
+    var InstagramReelImage by remember { mutableStateOf<Bitmap?>(null) }
     var outputImage by remember { mutableStateOf<Bitmap?>(null) }
     var WhiteColorsInputImage by remember { mutableStateOf<Bitmap?>(null) }
     var BlackColorsInputImage by remember { mutableStateOf<Bitmap?>(null) }
@@ -168,6 +169,29 @@ fun CreateScreen(navController: NavController) {
             }
         }
     }
+
+
+    val InstagramReelLauncher = rememberLauncherForActivityResult(
+        contract = ActivityResultContracts.GetContent()
+    ) { uri: Uri? ->
+        uri?.let {
+            val bitmap = BitmapFactory.decodeStream(
+                context.contentResolver.openInputStream(it)
+            )
+            InstagramReelImage = bitmap
+            sharedViewModel.setOriginalBitmap(InstagramReelImage!!)
+
+            coroutineScope.launch {
+                val remover = RemoveBg(context)
+                remover.clearBackground(InstagramReelImage!!).collect { output ->
+                    InstagramReelImage = output
+                    sharedViewModel.setBgRemovedBitmap(InstagramReelImage!!)
+                    navController.navigate(Screens.InstagramReel.route)
+                }
+            }
+        }
+    }
+
 
     val whiteColorsLauncher = rememberLauncherForActivityResult(
         contract = ActivityResultContracts.GetContent()
@@ -992,6 +1016,7 @@ fun CreateScreen(navController: NavController) {
                                 Box(
                                     modifier = Modifier
                                         .width(80.dp)
+                                        .clickable { InstagramReelLauncher.launch("image/*") }
                                         .height(120.dp)
                                         .border(
                                             BorderStroke(1.dp, color = Color.Gray),
