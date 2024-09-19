@@ -475,31 +475,26 @@ fun CreateScreen(navController: NavController) {
     }
 
 
-    Scaffold(
-        topBar = {
-            TopAppBar(
-                title = { },
-                actions = {
-                    Image(
-                        painter = painterResource(id = R.drawable.questionmark),
-                        contentDescription = "",
-                        contentScale = ContentScale.Crop,
-                        modifier = Modifier.size(26.dp)
-                    )
-                    Spacer(modifier = Modifier.width(14.dp))
-                    Image(
-                        painter = painterResource(id = R.drawable.getpro),
-                        contentDescription = "",
-                        contentScale = ContentScale.Crop,
-                        modifier = Modifier
-                            .wrapContentWidth()
-                            .height(36.dp)
-                    )
-                },
-                colors = TopAppBarDefaults.topAppBarColors(containerColor = Color.White)
+    Scaffold(topBar = {
+        TopAppBar(title = { }, actions = {
+            Image(
+                painter = painterResource(id = R.drawable.questionmark),
+                contentDescription = "",
+                contentScale = ContentScale.Crop,
+                modifier = Modifier.size(26.dp)
             )
-        }
-    ) { paddingValues ->
+            Spacer(modifier = Modifier.width(14.dp))
+            Image(
+                painter = painterResource(id = R.drawable.getpro),
+                contentDescription = "",
+                contentScale = ContentScale.Crop,
+                modifier = Modifier
+                    .wrapContentWidth()
+                    .height(36.dp)
+            )
+        }, colors = TopAppBarDefaults.topAppBarColors(containerColor = Color.White)
+        )
+    }) { paddingValues ->
         LazyColumn(
             modifier = Modifier
                 .fillMaxWidth()
@@ -589,11 +584,9 @@ fun CreateScreen(navController: NavController) {
 
                     if (pro) {
                         ModalBottomSheet(
-                            sheetState = sheetState,
-                            onDismissRequest = {
+                            sheetState = sheetState, onDismissRequest = {
                                 pro = false
-                            },
-                            scrimColor = Color.Black.copy(alpha = 0.32f)
+                            }, scrimColor = Color.Black.copy(alpha = 0.32f)
                         ) {
                             paymentSheetContent()
                         }
@@ -619,23 +612,21 @@ fun CreateScreen(navController: NavController) {
                             option.name.contains(searchText.text, ignoreCase = true)
                         }) { option ->
                             Column {
-                                Box(
-                                    modifier = Modifier
-                                        .clip(RoundedCornerShape(10.dp))
-                                        .width(78.dp)
-                                        .clickable {
-                                            when (option.name) {
-                                                "Remove Bg" -> galleryLauncher.launch("image/*")
-                                                "Resize" -> navController.navigate(Screens.CropScreen.route)
-                                                "Retouch", "Ai Bg", "Ai Shadows" -> {
-                                                    pro = true
-                                                }
+                                Box(modifier = Modifier
+                                    .clip(RoundedCornerShape(10.dp))
+                                    .width(78.dp)
+                                    .clickable {
+                                        when (option.name) {
+                                            "Remove Bg" -> galleryLauncher.launch("image/*")
+                                            "Resize" -> navController.navigate(Screens.CropScreen.route)
+                                            "Retouch", "Ai Bg", "Ai Shadows" -> {
+                                                pro = true
                                             }
                                         }
-                                        .height(70.dp)
-                                        .background(Color(0XFF9eaaf7).copy(alpha = 0.20f)),
-                                    contentAlignment = Alignment.Center
-                                ) {
+                                    }
+                                    .height(70.dp)
+                                    .background(Color(0XFF9eaaf7).copy(alpha = 0.20f)),
+                                    contentAlignment = Alignment.Center) {
                                     Image(
                                         painter = painterResource(id = option.icon),
                                         contentDescription = option.name,
@@ -648,8 +639,7 @@ fun CreateScreen(navController: NavController) {
                                             modifier = Modifier
                                                 .align(Alignment.TopEnd)
                                                 .background(
-                                                    Color.Red,
-                                                    shape = RoundedCornerShape(4.dp)
+                                                    Color.Red, shape = RoundedCornerShape(4.dp)
                                                 )
                                                 .padding(horizontal = 4.dp, vertical = 2.dp)
                                         ) {
@@ -708,8 +698,7 @@ fun CreateScreen(navController: NavController) {
                                                 "Original" -> originalColorsLauncher.launch("image/*")
 
                                             }
-                                        },
-                                    contentAlignment = Alignment.Center
+                                        }, contentAlignment = Alignment.Center
                                 ) {
                                     Image(
                                         painter = painterResource(id = option.icon),
@@ -785,8 +774,7 @@ fun CreateScreen(navController: NavController) {
                                                 "Sepia" -> sepiaLauncher.launch("image/*")
 
                                             }
-                                        },
-                                    contentAlignment = Alignment.Center
+                                        }, contentAlignment = Alignment.Center
                                 ) {
                                     Image(
                                         painter = painterResource(id = option.icon),
@@ -854,8 +842,7 @@ fun CreateScreen(navController: NavController) {
                                                 R.drawable.pic6 -> pic6Launcher.launch("image/*")
 
                                             }
-                                        },
-                                    contentAlignment = Alignment.Center
+                                        }, contentAlignment = Alignment.Center
                                 ) {
                                     Image(
                                         painter = painterResource(id = option.icon),
@@ -867,6 +854,240 @@ fun CreateScreen(navController: NavController) {
                             }
                         }
                     }
+
+
+
+                    Text(
+                        text = "Social Media >",
+                        color = Color.Black,
+                        fontSize = 22.sp,
+                        fontWeight = FontWeight.Medium,
+                        modifier = Modifier
+                            .align(Alignment.Start)
+                            .padding(start = 10.dp)
+                    )
+
+
+                    LazyRow(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .background(Color.White)
+                            .padding(horizontal = 10.dp, vertical = 16.dp),
+                        horizontalArrangement = Arrangement.spacedBy(16.dp),
+                        verticalAlignment = Alignment.CenterVertically
+                    ) {
+                        // Instagram Story
+                        item {
+                            Column(
+                                horizontalAlignment = Alignment.CenterHorizontally,
+                                verticalArrangement = Arrangement.spacedBy(8.dp)
+                            ) {
+                                Box(
+                                    modifier = Modifier
+                                        .width(80.dp)
+                                        .height(140.dp)
+                                        .border(
+                                            BorderStroke(1.dp, color = Color.Gray),
+                                            shape = RoundedCornerShape(12.dp)
+                                        ),
+                                    contentAlignment = Alignment.Center
+                                ) {
+                                    Image(
+                                        painter = painterResource(id = R.drawable.instalogo),
+                                        contentDescription = "Instagram Story",
+                                        contentScale = ContentScale.Crop,
+                                        modifier = Modifier.size(25.dp)
+                                    )
+                                }
+                                Text(
+                                    text = "Instagram Story",
+                                    fontSize = 12.sp
+                                )
+                            }
+                        }
+
+                        // Instagram Post
+                        item {
+                            Column(
+                                horizontalAlignment = Alignment.CenterHorizontally,
+                                verticalArrangement = Arrangement.spacedBy(8.dp)
+                            ) {
+                                Box(
+                                    modifier = Modifier
+                                        .size(100.dp)
+                                        .border(
+                                            BorderStroke(1.dp, color = Color.Gray),
+                                            shape = RoundedCornerShape(12.dp)
+                                        ),
+                                    contentAlignment = Alignment.Center
+                                ) {
+                                    Image(
+                                        painter = painterResource(id = R.drawable.instalogo),
+                                        contentDescription = "Instagram Post",
+                                        contentScale = ContentScale.Crop,
+                                        modifier = Modifier.size(25.dp)
+                                    )
+                                }
+                                Text(
+                                    text = "Instagram Post",
+                                    fontSize = 12.sp
+                                )
+                            }
+                        }
+
+                        // Instagram Reel
+                        item {
+                            Column(
+                                horizontalAlignment = Alignment.CenterHorizontally,
+                                verticalArrangement = Arrangement.spacedBy(8.dp)
+                            ) {
+                                Box(
+                                    modifier = Modifier
+                                        .width(80.dp)
+                                        .height(120.dp)
+                                        .border(
+                                            BorderStroke(1.dp, color = Color.Gray),
+                                            shape = RoundedCornerShape(12.dp)
+                                        ),
+                                    contentAlignment = Alignment.Center
+                                ) {
+                                    Image(
+                                        painter = painterResource(id = R.drawable.instalogo),
+                                        contentDescription = "Instagram Reel",
+                                        contentScale = ContentScale.Crop,
+                                        modifier = Modifier.size(25.dp)
+                                    )
+                                }
+                                Text(
+                                    text = "Instagram Reel",
+                                    fontSize = 12.sp
+                                )
+                            }
+                        }
+
+                        // Facebook Post
+                        item {
+                            Column(
+                                horizontalAlignment = Alignment.CenterHorizontally,
+                                verticalArrangement = Arrangement.spacedBy(8.dp)
+                            ) {
+                                Box(
+                                    modifier = Modifier
+                                        .width(100.dp)
+                                        .height(100.dp)
+                                        .border(
+                                            BorderStroke(1.dp, color = Color.Gray),
+                                            shape = RoundedCornerShape(12.dp)
+                                        ),
+                                    contentAlignment = Alignment.Center
+                                ) {
+                                    Image(
+                                        painter = painterResource(id = R.drawable.fblogo),
+                                        contentDescription = "Facebook Post",
+                                        contentScale = ContentScale.Crop,
+                                        modifier = Modifier.size(25.dp)
+                                    )
+                                }
+                                Text(
+                                    text = "Facebook Post",
+                                    fontSize = 12.sp
+                                )
+                            }
+                        }
+
+                        // TikTok Video
+                        item {
+                            Column(
+                                horizontalAlignment = Alignment.CenterHorizontally,
+                                verticalArrangement = Arrangement.spacedBy(8.dp)
+                            ) {
+                                Box(
+                                    modifier = Modifier
+                                        .width(80.dp)
+                                        .height(140.dp)
+                                        .border(
+                                            BorderStroke(1.dp, color = Color.Gray),
+                                            shape = RoundedCornerShape(12.dp)
+                                        ),
+                                    contentAlignment = Alignment.Center
+                                ) {
+                                    Image(
+                                        painter = painterResource(id = R.drawable.tiktoklogo),
+                                        contentDescription = "TikTok Video",
+                                        contentScale = ContentScale.Crop,
+                                        modifier = Modifier.size(25.dp)
+                                    )
+                                }
+                                Text(
+                                    text = "TikTok Video",
+                                    fontSize = 12.sp
+                                )
+                            }
+                        }
+
+                        // Facebook Story (New Shape)
+                        item {
+                            Column(
+                                horizontalAlignment = Alignment.CenterHorizontally,
+                                verticalArrangement = Arrangement.spacedBy(8.dp)
+                            ) {
+                                Box(
+                                    modifier = Modifier
+                                        .width(80.dp)
+                                        .height(160.dp)
+                                        .border(
+                                            BorderStroke(1.dp, color = Color.Gray),
+                                            shape = RoundedCornerShape(12.dp)
+                                        ),
+                                    contentAlignment = Alignment.Center
+                                ) {
+                                    Image(
+                                        painter = painterResource(id = R.drawable.fblogo),
+                                        contentDescription = "Facebook Story",
+                                        contentScale = ContentScale.Crop,
+                                        modifier = Modifier.size(25.dp)
+                                    )
+                                }
+                                Text(
+                                    text = "Facebook Story",
+                                    fontSize = 12.sp
+                                )
+                            }
+                        }
+
+                        // TikTok Ad (New Shape)
+                        item {
+                            Column(
+                                horizontalAlignment = Alignment.CenterHorizontally,
+                                verticalArrangement = Arrangement.spacedBy(8.dp)
+                            ) {
+                                Box(
+                                    modifier = Modifier
+                                        .width(100.dp)
+                                        .height(160.dp)
+                                        .border(
+                                            BorderStroke(1.dp, color = Color.Gray),
+                                            shape = RoundedCornerShape(12.dp)
+                                        ),
+                                    contentAlignment = Alignment.Center
+                                ) {
+                                    Image(
+                                        painter = painterResource(id = R.drawable.tiktoklogo),
+                                        contentDescription = "TikTok Ad",
+                                        contentScale = ContentScale.Crop,
+                                        modifier = Modifier.size(25.dp)
+                                    )
+                                }
+                                Text(
+                                    text = "TikTok Ad",
+                                    fontSize = 12.sp
+                                )
+                            }
+                        }
+                    }
+
+
+
                 }
             }
         }
