@@ -53,10 +53,13 @@ import com.example.backgroundremover_changebg.presentation.ui.screens.mixcolors.
 import com.example.backgroundremover_changebg.presentation.ui.screens.mixcolors.Pic4Screen
 import com.example.backgroundremover_changebg.presentation.ui.screens.mixcolors.Pic5Screen
 import com.example.backgroundremover_changebg.presentation.ui.screens.mixcolors.Pic6Screen
+import com.example.backgroundremover_changebg.presentation.ui.screens.socialmedia.FacebookStory
 import com.example.backgroundremover_changebg.presentation.ui.screens.socialmedia.Facebook_Post
 import com.example.backgroundremover_changebg.presentation.ui.screens.socialmedia.InstagramPost
 import com.example.backgroundremover_changebg.presentation.ui.screens.socialmedia.InstagramReel
 import com.example.backgroundremover_changebg.presentation.ui.screens.socialmedia.InstagramStory
+import com.example.backgroundremover_changebg.presentation.ui.screens.socialmedia.TiktokVideo
+import com.example.backgroundremover_changebg.presentation.ui.screens.socialmedia.Tiktok_Add
 
 @Composable
 fun Navigation(navController: NavHostController) {
@@ -155,13 +158,13 @@ fun Navigation(navController: NavHostController) {
             Facebook_Post(navController = navController)
         }
         composable(Screens.TiktokVideo.route) {
-
+            TiktokVideo(navController = navController)
         }
         composable(Screens.FacebookStory.route) {
-
+            FacebookStory(navController = navController)
         }
         composable(Screens.TiktokAdd.route) {
-
+            Tiktok_Add(navController = navController)
         }
     }
 }

@@ -78,6 +78,9 @@ fun CreateScreen(navController: NavController) {
     var InstagramPostImage by remember { mutableStateOf<Bitmap?>(null) }
     var InstagramReelImage by remember { mutableStateOf<Bitmap?>(null) }
     var Facebook_Post_Image by remember { mutableStateOf<Bitmap?>(null) }
+    var TiktokVideoImage by remember { mutableStateOf<Bitmap?>(null) }
+    var FacebookStoryImage by remember { mutableStateOf<Bitmap?>(null) }
+    var TiktokAdImage by remember { mutableStateOf<Bitmap?>(null) }
     var outputImage by remember { mutableStateOf<Bitmap?>(null) }
     var WhiteColorsInputImage by remember { mutableStateOf<Bitmap?>(null) }
     var BlackColorsInputImage by remember { mutableStateOf<Bitmap?>(null) }
@@ -214,6 +217,72 @@ fun CreateScreen(navController: NavController) {
             }
         }
     }
+
+    val TiktokVideoLauncher = rememberLauncherForActivityResult(
+        contract = ActivityResultContracts.GetContent()
+    ) { uri: Uri? ->
+        uri?.let {
+            val bitmap = BitmapFactory.decodeStream(
+                context.contentResolver.openInputStream(it)
+            )
+            TiktokVideoImage = bitmap
+            sharedViewModel.setOriginalBitmap(TiktokVideoImage!!)
+
+            coroutineScope.launch {
+                val remover = RemoveBg(context)
+                remover.clearBackground(TiktokVideoImage!!).collect { output ->
+                    TiktokVideoImage = output
+                    sharedViewModel.setBgRemovedBitmap(TiktokVideoImage!!)
+                    navController.navigate(Screens.TiktokVideo.route)
+                }
+            }
+        }
+    }
+
+
+    val FacebookStoryLauncher = rememberLauncherForActivityResult(
+        contract = ActivityResultContracts.GetContent()
+    ) { uri: Uri? ->
+        uri?.let {
+            val bitmap = BitmapFactory.decodeStream(
+                context.contentResolver.openInputStream(it)
+            )
+            FacebookStoryImage = bitmap
+            sharedViewModel.setOriginalBitmap(FacebookStoryImage!!)
+
+            coroutineScope.launch {
+                val remover = RemoveBg(context)
+                remover.clearBackground(FacebookStoryImage!!).collect { output ->
+                    FacebookStoryImage = output
+                    sharedViewModel.setBgRemovedBitmap(FacebookStoryImage!!)
+                    navController.navigate(Screens.FacebookStory.route)
+                }
+            }
+        }
+    }
+
+
+    val TiktokAdLauncher = rememberLauncherForActivityResult(
+        contract = ActivityResultContracts.GetContent()
+    ) { uri: Uri? ->
+        uri?.let {
+            val bitmap = BitmapFactory.decodeStream(
+                context.contentResolver.openInputStream(it)
+            )
+            TiktokAdImage = bitmap
+            sharedViewModel.setOriginalBitmap(TiktokAdImage!!)
+
+            coroutineScope.launch {
+                val remover = RemoveBg(context)
+                remover.clearBackground(TiktokAdImage!!).collect { output ->
+                    TiktokAdImage = output
+                    sharedViewModel.setBgRemovedBitmap(TiktokAdImage!!)
+                    navController.navigate(Screens.TiktokAdd.route)
+                }
+            }
+        }
+    }
+
 
     val whiteColorsLauncher = rememberLauncherForActivityResult(
         contract = ActivityResultContracts.GetContent()
@@ -1100,6 +1169,7 @@ fun CreateScreen(navController: NavController) {
                                 Box(
                                     modifier = Modifier
                                         .width(80.dp)
+                                        .clickable { TiktokVideoLauncher.launch("image/*") }
                                         .height(140.dp)
                                         .border(
                                             BorderStroke(1.dp, color = Color.Gray),
@@ -1130,6 +1200,7 @@ fun CreateScreen(navController: NavController) {
                                 Box(
                                     modifier = Modifier
                                         .width(80.dp)
+                                        .clickable { FacebookStoryLauncher.launch("image/*") }
                                         .height(160.dp)
                                         .border(
                                             BorderStroke(1.dp, color = Color.Gray),
@@ -1160,6 +1231,7 @@ fun CreateScreen(navController: NavController) {
                                 Box(
                                     modifier = Modifier
                                         .width(100.dp)
+                                        .clickable { TiktokAdLauncher.launch("image/*") }
                                         .height(160.dp)
                                         .border(
                                             BorderStroke(1.dp, color = Color.Gray),
@@ -1181,8 +1253,6 @@ fun CreateScreen(navController: NavController) {
                             }
                         }
                     }
-
-
                 }
             }
         }
