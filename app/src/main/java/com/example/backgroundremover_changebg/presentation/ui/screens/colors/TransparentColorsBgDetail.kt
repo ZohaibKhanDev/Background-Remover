@@ -1,15 +1,7 @@
 package com.example.backgroundremover_changebg.presentation.ui.screens.colors
 
 import android.annotation.SuppressLint
-import android.content.Context
-import android.content.Intent
 import android.graphics.Bitmap
-import android.graphics.Canvas
-import android.graphics.Paint
-import android.net.Uri
-import android.os.Build
-import android.os.Environment
-import android.widget.Toast
 import androidx.compose.animation.core.Animatable
 import androidx.compose.animation.core.LinearEasing
 import androidx.compose.animation.core.tween
@@ -42,6 +34,7 @@ import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -50,19 +43,17 @@ import androidx.compose.ui.draw.blur
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.asImageBitmap
-import androidx.compose.ui.graphics.toArgb
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.times
 import androidx.navigation.NavController
-import com.example.backgroundremover_changebg.presentation.ui.screens.bgdetail.saveImage
+import com.example.backgroundremover_changebg.presentation.ui.screens.bgdetail.saveImageWithBackground
 import com.example.backgroundremover_changebg.presentation.viewmodel.MainViewModel
 import kotlinx.coroutines.delay
+import kotlinx.coroutines.launch
 import org.koin.compose.koinInject
-import java.io.File
-import java.io.FileOutputStream
 
 @OptIn(ExperimentalMaterial3Api::class)
 @SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")
@@ -133,6 +124,7 @@ fun TransparentColorBgDetail(navController: NavController) {
         Color(0xFF4B0082),
         Color(0xFF40E0D0)
     )
+    val scope = rememberCoroutineScope()
 
     Scaffold(
         topBar = {
@@ -152,14 +144,15 @@ fun TransparentColorBgDetail(navController: NavController) {
                         modifier = Modifier
                             .blur(0.dp)
                             .clickable {
-                                saveImage(
-                                    context,
-                                    originalBitmap,
-                                    bgRemovedBitmap,
-                                    erasedBitmap,
-                                    selectedColor,
-                                    ""
-                                )
+                                scope.launch {
+                                    saveImageWithBackground(
+                                        bgRemovedBitmap.toString(),
+                                        selectedColor,
+                                        bgRemovedBitmap,
+                                        erasedBitmap,
+                                        context
+                                    )
+                                }
                             }
                     )
                 },

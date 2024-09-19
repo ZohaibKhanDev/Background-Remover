@@ -30,7 +30,6 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.items
-import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Scaffold
@@ -43,6 +42,7 @@ import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -58,9 +58,10 @@ import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.times
 import androidx.navigation.NavController
-import com.example.backgroundremover_changebg.presentation.ui.screens.bgdetail.saveImage
+import com.example.backgroundremover_changebg.presentation.ui.screens.bgdetail.saveImageWithBackground
 import com.example.backgroundremover_changebg.presentation.viewmodel.MainViewModel
 import kotlinx.coroutines.delay
+import kotlinx.coroutines.launch
 import org.koin.compose.koinInject
 import java.io.File
 import java.io.FileOutputStream
@@ -134,6 +135,7 @@ fun ColorsBgDetail(navController: NavController) {
         Color(0xFF4B0082),
         Color(0xFF40E0D0)
     )
+    val scope = rememberCoroutineScope()
 
     Scaffold(
         topBar = {
@@ -153,14 +155,15 @@ fun ColorsBgDetail(navController: NavController) {
                         modifier = Modifier
                             .blur(0.dp)
                             .clickable {
-                                saveImage(
-                                    context,
-                                    originalBitmap,
-                                    bgRemovedBitmap,
-                                    erasedBitmap,
-                                    selectedColor,
-                                    ""
-                                )
+                                scope.launch {
+                                    saveImageWithBackground(
+                                        bgRemovedBitmap.toString(),
+                                        selectedColor,
+                                        bgRemovedBitmap,
+                                        erasedBitmap,
+                                        context
+                                    )
+                                }
                             }
                     )
                 },

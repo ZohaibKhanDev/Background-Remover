@@ -63,6 +63,7 @@ import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -193,7 +194,7 @@ fun BgDetailScreen(navController: NavController) {
             targetValue = 0f, animationSpec = tween(durationMillis = 2000, easing = LinearEasing)
         )
     }
-
+    val scope = rememberCoroutineScope()
     Scaffold(topBar = {
         TopAppBar(title = { }, navigationIcon = {
             Icon(imageVector = Icons.Default.ArrowBackIosNew,
@@ -201,14 +202,15 @@ fun BgDetailScreen(navController: NavController) {
                 modifier = Modifier.clickable { navController.navigateUp() })
         }, actions = {
             Text(text = "Save", color = Color.Magenta, modifier = Modifier.clickable {
-                saveImage(
-                    context,
-                    originalBitmap,
-                    bgRemovedBitmap,
-                    erasedBitmap,
-                    selectedColor,
-                    selectedPhoto
-                )
+                scope.launch {
+                    saveImageWithBackground(
+                        selectedPhoto,
+                        selectedColor,
+                        bgRemovedBitmap,
+                        erasedBitmap,
+                        context
+                    )
+                }
             })
         })
     }, bottomBar = {
@@ -553,73 +555,68 @@ fun Bitmap.eraseOnCanvas(path: android.graphics.Path, eraserColor: Color, opacit
 }
 
 
-fun saveImage(
-    context: Context,
-    originalBitmap: Bitmap?,
+suspend fun saveImageWithBackground(
+    selectedPhoto: String?,
+    selectedColor: Color?,
     bgRemovedBitmap: Bitmap?,
     erasedBitmap: Bitmap?,
-    selectedColor: Color?,
-    selectedPhoto: String?
-) {
-    createNotificationChannel(context)
-    showNotification(context, 0, true)
+    context: Context
+): Bitmap {
+    return withContext(Dispatchers.Default) {
+        val width = 1080
+        val height = 1920
+        val resultBitmap = Bitmap.createBitmap(width, height, Bitmap.Config.ARGB_8888)
+        val canvas = Canvas(resultBitmap)
 
-    CoroutineScope(Dispatchers.IO).launch {
-        val bitmap = withContext(Dispatchers.Default) {
-            val width = 500
-            val height = 500
-            val resultBitmap = Bitmap.createBitmap(width, height, Bitmap.Config.ARGB_8888)
-            val canvas = Canvas(resultBitmap)
-
-            selectedPhoto?.let {
-                try {
-                    val photoBitmap = BitmapFactory.decodeStream(URL(it).openStream())
-                    canvas.drawBitmap(photoBitmap, 0f, 0f, null)
-                } catch (e: Exception) {
-                    e.printStackTrace()
-                }
+        selectedPhoto?.let {
+            try {
+                val photoBitmap = BitmapFactory.decodeStream(URL(it).openStream())
+                val scaledPhotoBitmap = Bitmap.createScaledBitmap(photoBitmap, width, height, false)
+                canvas.drawBitmap(scaledPhotoBitmap, 0f, 0f, null)
+            } catch (e: Exception) {
+                e.printStackTrace()
+            }
+        } ?: run {
+            selectedColor?.let {
+                canvas.drawColor(it.toArgb())
             } ?: run {
-                selectedColor?.let {
-                    canvas.drawColor(it.toArgb())
-                }
+                canvas.drawColor(Color.White.toArgb())
             }
-
-            bgRemovedBitmap?.let {
-                canvas.drawBitmap(it, 0f, 0f, null)
-            }
-
-            erasedBitmap?.let {
-                canvas.drawBitmap(it, 1f, 1f, null)
-            }
-
-            resultBitmap
         }
 
-        saveBitmapToStorage(context, bitmap)
+        bgRemovedBitmap?.let {
 
-        withContext(Dispatchers.Main) {
-            updateNotificationProgress(context, 100)
-            dismissNotification(context)
+            val scaledBgRemovedBitmap = Bitmap.createScaledBitmap(it, width, height, false)
+            canvas.drawBitmap(scaledBgRemovedBitmap, 0f, 0f, null)
         }
+
+
+        erasedBitmap?.let {
+            val scaledErasedBitmap = Bitmap.createScaledBitmap(it, width, height, false)
+            canvas.drawBitmap(scaledErasedBitmap, 0f, 0f, null)
+        }
+
+        saveImageToMediaStore(context, resultBitmap)
+
+        resultBitmap
     }
 }
 
 
-private fun saveBitmapToStorage(context: Context, bitmap: Bitmap) {
-    val resolver = context.contentResolver
-    val contentValues = ContentValues().apply {
-        put(
-            MediaStore.Images.Media.DISPLAY_NAME,
-            "bg_removed_image_${System.currentTimeMillis()}.png"
-        )
-        put(MediaStore.Images.Media.MIME_TYPE, "image/png")
+private fun saveImageToMediaStore(context: Context, bitmap: Bitmap) {
+    val filename = "image_${System.currentTimeMillis()}.jpg"
+    val values = ContentValues().apply {
+        put(MediaStore.Images.Media.DISPLAY_NAME, filename)
+        put(MediaStore.Images.Media.MIME_TYPE, "image/jpeg")
         put(MediaStore.Images.Media.RELATIVE_PATH, Environment.DIRECTORY_PICTURES)
     }
-    val uri = resolver.insert(MediaStore.Images.Media.EXTERNAL_CONTENT_URI, contentValues)
+
+    val resolver = context.contentResolver
+    val uri = resolver.insert(MediaStore.Images.Media.EXTERNAL_CONTENT_URI, values)
 
     uri?.let {
         resolver.openOutputStream(it)?.use { outputStream ->
-            bitmap.compress(Bitmap.CompressFormat.PNG, 100, outputStream)
+            bitmap.compress(Bitmap.CompressFormat.JPEG, 100, outputStream)
         }
     }
 }
