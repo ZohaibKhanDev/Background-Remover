@@ -74,6 +74,7 @@ fun CreateScreen(navController: NavController) {
     var searchText by remember { mutableStateOf(TextFieldValue("")) }
     val context = LocalContext.current
     var inputImage by remember { mutableStateOf<Bitmap?>(null) }
+    var InstagramStoryImage by remember { mutableStateOf<Bitmap?>(null) }
     var outputImage by remember { mutableStateOf<Bitmap?>(null) }
     var WhiteColorsInputImage by remember { mutableStateOf<Bitmap?>(null) }
     var BlackColorsInputImage by remember { mutableStateOf<Bitmap?>(null) }
@@ -119,6 +120,27 @@ fun CreateScreen(navController: NavController) {
                     outputImage = output
                     sharedViewModel.setBgRemovedBitmap(outputImage!!)
                     navController.navigate(Screens.BgDetail.route)
+                }
+            }
+        }
+    }
+
+    val InstagramStoryLauncher = rememberLauncherForActivityResult(
+        contract = ActivityResultContracts.GetContent()
+    ) { uri: Uri? ->
+        uri?.let {
+            val bitmap = BitmapFactory.decodeStream(
+                context.contentResolver.openInputStream(it)
+            )
+            InstagramStoryImage = bitmap
+            sharedViewModel.setOriginalBitmap(InstagramStoryImage!!)
+
+            coroutineScope.launch {
+                val remover = RemoveBg(context)
+                remover.clearBackground(InstagramStoryImage!!).collect { output ->
+                    InstagramStoryImage = output
+                    sharedViewModel.setBgRemovedBitmap(InstagramStoryImage!!)
+                    navController.navigate(Screens.InstagramStory.route)
                 }
             }
         }
@@ -856,7 +878,6 @@ fun CreateScreen(navController: NavController) {
                     }
 
 
-
                     Text(
                         text = "Social Media >",
                         color = Color.Black,
@@ -876,7 +897,7 @@ fun CreateScreen(navController: NavController) {
                         horizontalArrangement = Arrangement.spacedBy(16.dp),
                         verticalAlignment = Alignment.CenterVertically
                     ) {
-                        // Instagram Story
+
                         item {
                             Column(
                                 horizontalAlignment = Alignment.CenterHorizontally,
@@ -885,6 +906,9 @@ fun CreateScreen(navController: NavController) {
                                 Box(
                                     modifier = Modifier
                                         .width(80.dp)
+                                        .clickable {
+                                            InstagramStoryLauncher.launch("image/*")
+                                        }
                                         .height(140.dp)
                                         .border(
                                             BorderStroke(1.dp, color = Color.Gray),
@@ -906,7 +930,7 @@ fun CreateScreen(navController: NavController) {
                             }
                         }
 
-                        // Instagram Post
+
                         item {
                             Column(
                                 horizontalAlignment = Alignment.CenterHorizontally,
@@ -935,7 +959,7 @@ fun CreateScreen(navController: NavController) {
                             }
                         }
 
-                        // Instagram Reel
+
                         item {
                             Column(
                                 horizontalAlignment = Alignment.CenterHorizontally,
@@ -965,7 +989,7 @@ fun CreateScreen(navController: NavController) {
                             }
                         }
 
-                        // Facebook Post
+
                         item {
                             Column(
                                 horizontalAlignment = Alignment.CenterHorizontally,
@@ -995,7 +1019,7 @@ fun CreateScreen(navController: NavController) {
                             }
                         }
 
-                        // TikTok Video
+
                         item {
                             Column(
                                 horizontalAlignment = Alignment.CenterHorizontally,
@@ -1025,7 +1049,7 @@ fun CreateScreen(navController: NavController) {
                             }
                         }
 
-                        // Facebook Story (New Shape)
+
                         item {
                             Column(
                                 horizontalAlignment = Alignment.CenterHorizontally,
@@ -1055,7 +1079,7 @@ fun CreateScreen(navController: NavController) {
                             }
                         }
 
-                        // TikTok Ad (New Shape)
+
                         item {
                             Column(
                                 horizontalAlignment = Alignment.CenterHorizontally,
@@ -1085,7 +1109,6 @@ fun CreateScreen(navController: NavController) {
                             }
                         }
                     }
-
 
 
                 }

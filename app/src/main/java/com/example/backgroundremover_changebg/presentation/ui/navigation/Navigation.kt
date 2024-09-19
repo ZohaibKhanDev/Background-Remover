@@ -53,6 +53,7 @@ import com.example.backgroundremover_changebg.presentation.ui.screens.mixcolors.
 import com.example.backgroundremover_changebg.presentation.ui.screens.mixcolors.Pic4Screen
 import com.example.backgroundremover_changebg.presentation.ui.screens.mixcolors.Pic5Screen
 import com.example.backgroundremover_changebg.presentation.ui.screens.mixcolors.Pic6Screen
+import com.example.backgroundremover_changebg.presentation.ui.screens.socialmedia.InstagramStory
 
 @Composable
 fun Navigation(navController: NavHostController) {
@@ -135,6 +136,30 @@ fun Navigation(navController: NavHostController) {
         composable(Screens.Sepia.route) {
             SepiaScreen(navController = navController)
         }
+
+        composable(Screens.InstagramStory.route) {
+            InstagramStory(navController = navController)
+        }
+
+        composable(Screens.InstagramPost.route) {
+
+        }
+        composable(Screens.InstagramReel.route) {
+
+        }
+
+        composable(Screens.FacebookPost.route) {
+
+        }
+        composable(Screens.TiktokVideo.route) {
+
+        }
+        composable(Screens.FacebookStory.route) {
+
+        }
+        composable(Screens.TiktokAdd.route) {
+
+        }
     }
 }
 
@@ -167,6 +192,13 @@ fun NavEntry() {
         currentRoute?.startsWith(Screens.LowKey.route) == true -> false
         currentRoute?.startsWith(Screens.HeighKey.route) == true -> false
         currentRoute?.startsWith(Screens.Sepia.route) == true -> false
+        currentRoute?.startsWith(Screens.InstagramStory.route) == true -> false
+        currentRoute?.startsWith(Screens.InstagramPost.route) == true -> false
+        currentRoute?.startsWith(Screens.InstagramReel.route) == true -> false
+        currentRoute?.startsWith(Screens.FacebookPost.route) == true -> false
+        currentRoute?.startsWith(Screens.TiktokVideo.route) == true -> false
+        currentRoute?.startsWith(Screens.FacebookStory.route) == true -> false
+        currentRoute?.startsWith(Screens.TiktokAdd.route) == true -> false
         else -> true
     }
 
@@ -341,6 +373,56 @@ sealed class Screens(
         selectedIcon = Icons.Filled.Details,
         unSelectedIcon = Icons.Outlined.Details
     )
+
+    object InstagramStory : Screens(
+        "InstagramStory",
+        "InstagramStory",
+        selectedIcon = Icons.Filled.Details,
+        unSelectedIcon = Icons.Outlined.Details
+    )
+
+    object InstagramPost : Screens(
+        "InstagramPost",
+        "InstagramPost",
+        selectedIcon = Icons.Filled.Details,
+        unSelectedIcon = Icons.Outlined.Details
+    )
+
+    object InstagramReel : Screens(
+        "InstagramReel",
+        "InstagramReel",
+        selectedIcon = Icons.Filled.Details,
+        unSelectedIcon = Icons.Outlined.Details
+    )
+
+    object FacebookPost : Screens(
+        "FacebookPost",
+        "FacebookPost",
+        selectedIcon = Icons.Filled.Details,
+        unSelectedIcon = Icons.Outlined.Details
+    )
+
+    object TiktokVideo : Screens(
+        "TiktokVideo",
+        "TiktokVideo",
+        selectedIcon = Icons.Filled.Details,
+        unSelectedIcon = Icons.Outlined.Details
+    )
+
+    object FacebookStory : Screens(
+        "FacebookStory",
+        "FacebookStory",
+        selectedIcon = Icons.Filled.Details,
+        unSelectedIcon = Icons.Outlined.Details
+    )
+
+    object TiktokAdd : Screens(
+        "TiktokAdd",
+        "TiktokAdd",
+        selectedIcon = Icons.Filled.Details,
+        unSelectedIcon = Icons.Outlined.Details
+    )
+
 
 }
 
