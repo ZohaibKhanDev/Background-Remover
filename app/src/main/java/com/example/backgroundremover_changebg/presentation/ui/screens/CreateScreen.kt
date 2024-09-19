@@ -75,6 +75,7 @@ fun CreateScreen(navController: NavController) {
     val context = LocalContext.current
     var inputImage by remember { mutableStateOf<Bitmap?>(null) }
     var InstagramStoryImage by remember { mutableStateOf<Bitmap?>(null) }
+    var InstagramPostImage by remember { mutableStateOf<Bitmap?>(null) }
     var outputImage by remember { mutableStateOf<Bitmap?>(null) }
     var WhiteColorsInputImage by remember { mutableStateOf<Bitmap?>(null) }
     var BlackColorsInputImage by remember { mutableStateOf<Bitmap?>(null) }
@@ -141,6 +142,28 @@ fun CreateScreen(navController: NavController) {
                     InstagramStoryImage = output
                     sharedViewModel.setBgRemovedBitmap(InstagramStoryImage!!)
                     navController.navigate(Screens.InstagramStory.route)
+                }
+            }
+        }
+    }
+
+
+    val InstagramPostLauncher = rememberLauncherForActivityResult(
+        contract = ActivityResultContracts.GetContent()
+    ) { uri: Uri? ->
+        uri?.let {
+            val bitmap = BitmapFactory.decodeStream(
+                context.contentResolver.openInputStream(it)
+            )
+            InstagramPostImage = bitmap
+            sharedViewModel.setOriginalBitmap(InstagramPostImage!!)
+
+            coroutineScope.launch {
+                val remover = RemoveBg(context)
+                remover.clearBackground(InstagramPostImage!!).collect { output ->
+                    InstagramPostImage = output
+                    sharedViewModel.setBgRemovedBitmap(InstagramPostImage!!)
+                    navController.navigate(Screens.InstagramPost.route)
                 }
             }
         }
@@ -939,6 +962,7 @@ fun CreateScreen(navController: NavController) {
                                 Box(
                                     modifier = Modifier
                                         .size(100.dp)
+                                        .clickable { InstagramPostLauncher.launch("image/*") }
                                         .border(
                                             BorderStroke(1.dp, color = Color.Gray),
                                             shape = RoundedCornerShape(12.dp)
