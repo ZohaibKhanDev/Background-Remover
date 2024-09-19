@@ -90,6 +90,8 @@ fun ColorsBgDetail(navController: NavController) {
         }
     }
 
+
+
     LaunchedEffect(Unit) {
         while (showOriginalImage) {
             scanAnimationOffset.animateTo(
