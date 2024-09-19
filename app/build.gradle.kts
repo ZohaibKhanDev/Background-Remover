@@ -105,4 +105,3 @@ dependencies {
     implementation("com.vanniktech:android-image-cropper:4.5.0")
     implementation ("com.burhanrashid52:photoeditor:3.0.2")
 }
-
