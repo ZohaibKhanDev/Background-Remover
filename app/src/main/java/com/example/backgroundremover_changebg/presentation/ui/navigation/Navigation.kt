@@ -53,6 +53,7 @@ import com.example.backgroundremover_changebg.presentation.ui.screens.mixcolors.
 import com.example.backgroundremover_changebg.presentation.ui.screens.mixcolors.Pic4Screen
 import com.example.backgroundremover_changebg.presentation.ui.screens.mixcolors.Pic5Screen
 import com.example.backgroundremover_changebg.presentation.ui.screens.mixcolors.Pic6Screen
+import com.example.backgroundremover_changebg.presentation.ui.screens.socialmedia.Facebook_Post
 import com.example.backgroundremover_changebg.presentation.ui.screens.socialmedia.InstagramPost
 import com.example.backgroundremover_changebg.presentation.ui.screens.socialmedia.InstagramReel
 import com.example.backgroundremover_changebg.presentation.ui.screens.socialmedia.InstagramStory
@@ -151,7 +152,7 @@ fun Navigation(navController: NavHostController) {
         }
 
         composable(Screens.FacebookPost.route) {
-
+            Facebook_Post(navController = navController)
         }
         composable(Screens.TiktokVideo.route) {
 

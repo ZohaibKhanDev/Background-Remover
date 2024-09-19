@@ -77,6 +77,7 @@ fun CreateScreen(navController: NavController) {
     var InstagramStoryImage by remember { mutableStateOf<Bitmap?>(null) }
     var InstagramPostImage by remember { mutableStateOf<Bitmap?>(null) }
     var InstagramReelImage by remember { mutableStateOf<Bitmap?>(null) }
+    var Facebook_Post_Image by remember { mutableStateOf<Bitmap?>(null) }
     var outputImage by remember { mutableStateOf<Bitmap?>(null) }
     var WhiteColorsInputImage by remember { mutableStateOf<Bitmap?>(null) }
     var BlackColorsInputImage by remember { mutableStateOf<Bitmap?>(null) }
@@ -192,6 +193,27 @@ fun CreateScreen(navController: NavController) {
         }
     }
 
+
+    val Facebook_Post_Launcher = rememberLauncherForActivityResult(
+        contract = ActivityResultContracts.GetContent()
+    ) { uri: Uri? ->
+        uri?.let {
+            val bitmap = BitmapFactory.decodeStream(
+                context.contentResolver.openInputStream(it)
+            )
+            Facebook_Post_Image = bitmap
+            sharedViewModel.setOriginalBitmap(Facebook_Post_Image!!)
+
+            coroutineScope.launch {
+                val remover = RemoveBg(context)
+                remover.clearBackground(Facebook_Post_Image!!).collect { output ->
+                    Facebook_Post_Image = output
+                    sharedViewModel.setBgRemovedBitmap(Facebook_Post_Image!!)
+                    navController.navigate(Screens.FacebookPost.route)
+                }
+            }
+        }
+    }
 
     val whiteColorsLauncher = rememberLauncherForActivityResult(
         contract = ActivityResultContracts.GetContent()
@@ -1048,6 +1070,7 @@ fun CreateScreen(navController: NavController) {
                                     modifier = Modifier
                                         .width(100.dp)
                                         .height(100.dp)
+                                        .clickable { Facebook_Post_Launcher.launch("image/*") }
                                         .border(
                                             BorderStroke(1.dp, color = Color.Gray),
                                             shape = RoundedCornerShape(12.dp)
