@@ -24,6 +24,7 @@ import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -32,11 +33,13 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.asImageBitmap
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
+import com.example.backgroundremover_changebg.presentation.ui.screens.bgdetail.saveImageWithBackground
 import com.example.backgroundremover_changebg.presentation.viewmodel.MainViewModel
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
@@ -71,7 +74,8 @@ fun BlurScreen(navController: NavController) {
         delay(7000)
         isBlurred = true
     }
-
+    val context = LocalContext.current
+    val scope = rememberCoroutineScope()
     Scaffold(topBar = {
         TopAppBar(
             title = {},
@@ -86,6 +90,14 @@ fun BlurScreen(navController: NavController) {
             },
             actions = {
                 Text(text = "Save", color = Color.Magenta, modifier = Modifier.clickable {
+                    scope.launch {
+                        bitmap?.let {
+                            saveImageToFile(
+                                context,
+                                it, isBlurred = true, isSepia = false
+                            )
+                        }
+                    }
 
                 })
             }

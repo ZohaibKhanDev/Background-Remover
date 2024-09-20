@@ -1,8 +1,14 @@
 package com.example.backgroundremover_changebg.presentation.ui.screens.blur
 
 import android.annotation.SuppressLint
+import android.content.Context
 import android.graphics.Bitmap
 import android.graphics.ColorMatrix
+import android.graphics.ColorMatrixColorFilter
+import android.graphics.Paint
+import android.net.Uri
+import android.provider.MediaStore
+import android.widget.Toast
 import androidx.compose.animation.core.Animatable
 import androidx.compose.animation.core.LinearEasing
 import androidx.compose.animation.core.tween
@@ -26,6 +32,7 @@ import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -37,15 +44,22 @@ import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.graphics.asImageBitmap
 import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
+import com.example.backgroundremover_changebg.presentation.ui.screens.bgdetail.saveImageWithBackground
 import com.example.backgroundremover_changebg.presentation.viewmodel.MainViewModel
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 import org.koin.compose.koinInject
+import java.io.File
+import java.io.FileOutputStream
+import java.io.OutputStream
 
 @OptIn(ExperimentalMaterial3Api::class)
 @SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")
@@ -86,7 +100,8 @@ fun SepiaScreen(navController: NavController) {
         delay(7000)
         isBlurred = true
     }
-
+    val context = LocalContext.current
+    val scope = rememberCoroutineScope()
     Scaffold(topBar = {
         TopAppBar(
             title = {},
@@ -102,6 +117,14 @@ fun SepiaScreen(navController: NavController) {
             actions = {
                 Text(text = "Save", color = Color.Magenta, modifier = Modifier.clickable {
 
+                    scope.launch {
+                        bitmap?.let {
+                            saveImageToFile(
+                                context,
+                                it, isBlurred = false, isSepia = true
+                            )
+                        }
+                    }
                 })
             }
         )
@@ -149,8 +172,74 @@ fun SepiaScreen(navController: NavController) {
 }
 
 
+suspend fun saveImageToFile(
+    context: Context,
+    originalBitmap: Bitmap,
+    isBlurred: Boolean,
+    isSepia: Boolean
+): Uri? {
+    return withContext(Dispatchers.IO) {
+        try {
+            val modifiedBitmap = if (isBlurred || isSepia) {
+                applyEffectsToBitmap(originalBitmap, isBlurred, isSepia)
+            } else {
+                originalBitmap
+            }
+
+            val filename = "modified_image_${System.currentTimeMillis()}.jpg"
+            val file = File(context.externalMediaDirs.first(), filename)
+
+            val outStream: OutputStream = FileOutputStream(file)
+            modifiedBitmap.compress(Bitmap.CompressFormat.JPEG, 100, outStream)
+            outStream.flush()
+            outStream.close()
+
+            val uri = MediaStore.Images.Media.insertImage(
+                context.contentResolver,
+                file.absolutePath,
+                filename,
+                "Modified image with effects"
+            )
+
+            Uri.parse(uri)
+        } catch (e: Exception) {
+            e.printStackTrace()
+            null
+        }
+    }
+}
 
 
+
+
+fun applyEffectsToBitmap(
+    bitmap: Bitmap,
+    isBlurred: Boolean,
+    isSepia: Boolean
+): Bitmap {
+    val modifiedBitmap = bitmap.copy(Bitmap.Config.ARGB_8888, true)
+
+    val canvas = android.graphics.Canvas(modifiedBitmap)
+    val paint = Paint()
+
+    if (isSepia) {
+        val sepiaMatrix = ColorMatrix().apply {
+            setSaturation(0f)
+        }
+        val sepiaColorFilter = ColorMatrixColorFilter(sepiaMatrix)
+        paint.colorFilter = sepiaColorFilter
+
+        canvas.drawBitmap(bitmap, 0f, 0f, paint)
+    } else {
+        canvas.drawBitmap(bitmap, 0f, 0f, null)
+    }
+
+    if (isBlurred) {
+
+    }
+
+    return modifiedBitmap
+}
 
 
 

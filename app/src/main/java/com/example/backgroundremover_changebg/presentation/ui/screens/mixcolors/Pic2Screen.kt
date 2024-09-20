@@ -30,6 +30,7 @@ import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -40,12 +41,15 @@ import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.asImageBitmap
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 import com.example.backgroundremover_changebg.R
+import com.example.backgroundremover_changebg.presentation.ui.screens.bgdetail.saveImageWithBackground
 import com.example.backgroundremover_changebg.presentation.viewmodel.MainViewModel
 import kotlinx.coroutines.delay
+import kotlinx.coroutines.launch
 import org.koin.compose.koinInject
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -92,7 +96,8 @@ fun Pic2Screen(navController: NavController) {
         R.drawable.bg5, R.drawable.bg6, R.drawable.bg7, R.drawable.bg8,
         R.drawable.bg9, R.drawable.bg10, R.drawable.bg11,
     )
-
+    val context = LocalContext.current
+    val scope = rememberCoroutineScope()
     Scaffold(topBar = {
         TopAppBar(title = { /*TODO*/ }, navigationIcon = {
             Text(
@@ -100,7 +105,18 @@ fun Pic2Screen(navController: NavController) {
                 color = Color.Blue,
                 modifier = Modifier.clickable { navController.navigateUp() })
         }, actions = {
-            Text(text = "Save", color = Color.Magenta)
+            Text(text = "Save", color = Color.Magenta, modifier = Modifier.clickable {
+
+                scope.launch {
+                    saveImageWithBackground(
+                        selectedPhoto = selectedBg.toString(),
+                        selectedColor = null,
+                        bgRemovedBitmap,
+                        erasedBitmap = null,
+                        context
+                    )
+                }
+            })
         }, colors = TopAppBarDefaults.topAppBarColors(containerColor = Color.White))
     }, bottomBar = {
         BottomAppBar(containerColor = Color.White) {
