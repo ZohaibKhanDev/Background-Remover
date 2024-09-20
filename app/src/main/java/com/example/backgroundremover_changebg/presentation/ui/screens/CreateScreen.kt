@@ -863,7 +863,7 @@ fun CreateScreen(navController: NavController) {
                                     Image(
                                         painter = painterResource(id = option.icon),
                                         contentDescription = "",
-                                        contentScale = ContentScale.Fit,
+                                        contentScale = ContentScale.Crop,
                                         modifier = Modifier.fillMaxSize()
                                     )
                                 }
