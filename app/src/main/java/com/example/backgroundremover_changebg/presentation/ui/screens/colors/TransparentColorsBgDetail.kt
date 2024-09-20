@@ -146,7 +146,7 @@ fun TransparentColorBgDetail(navController: NavController) {
                             .clickable {
                                 scope.launch {
                                     saveImageWithBackground(
-                                        bgRemovedBitmap.toString(),
+                                        selectedPhoto = null,
                                         selectedColor,
                                         bgRemovedBitmap,
                                         erasedBitmap,

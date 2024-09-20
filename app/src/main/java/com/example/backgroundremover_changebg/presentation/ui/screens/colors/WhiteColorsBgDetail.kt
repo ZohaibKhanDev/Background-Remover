@@ -139,40 +139,30 @@ fun ColorsBgDetail(navController: NavController) {
     )
     val scope = rememberCoroutineScope()
 
-    Scaffold(
-        topBar = {
-            TopAppBar(
-                title = { /* TODO */ },
-                navigationIcon = {
-                    Text(
-                        text = "Cancel",
-                        color = Color.Blue,
-                        modifier = Modifier.clickable { navController.navigateUp() }
-                    )
-                },
-                actions = {
-                    Text(
-                        text = "Save",
-                        color = Color.Magenta,
-                        modifier = Modifier
-                            .blur(0.dp)
-                            .clickable {
-                                scope.launch {
-                                    saveImageWithBackground(
-                                        bgRemovedBitmap.toString(),
-                                        selectedColor,
-                                        bgRemovedBitmap,
-                                        erasedBitmap,
-                                        context
-                                    )
-                                }
-                            }
-                    )
-                },
-                colors = TopAppBarDefaults.topAppBarColors(containerColor = Color.White)
-            )
-        }
-    ) {
+    Scaffold(topBar = {
+        TopAppBar(title = { /* TODO */ }, navigationIcon = {
+            Text(text = "Cancel",
+                color = Color.Blue,
+                modifier = Modifier.clickable { navController.navigateUp() })
+        }, actions = {
+            Text(text = "Save",
+                color = Color.Magenta,
+                modifier = Modifier
+                    .blur(0.dp)
+                    .clickable {
+                        scope.launch {
+                            saveImageWithBackground(
+                                selectedPhoto = null,
+                                selectedColor,
+                                bgRemovedBitmap,
+                                erasedBitmap,
+                                context
+                            )
+                        }
+                    })
+        }, colors = TopAppBarDefaults.topAppBarColors(containerColor = Color.White)
+        )
+    }) {
         Box(
             modifier = Modifier
                 .fillMaxSize()
@@ -204,18 +194,14 @@ fun ColorsBgDetail(navController: NavController) {
                             )
                         }
 
-                        Box(
-                            modifier = Modifier
-                                .fillMaxWidth()
-                                .height(scannerHeight)
-                                .offset(
-                                    y = with(LocalDensity.current) {
-                                        (scanAnimationOffset.value * (boxHeight - scannerHeight)).toPx().dp
-                                    }
-                                )
-                                .background(Color.Blue)
-                                .align(Alignment.TopCenter)
-                        )
+                        Box(modifier = Modifier
+                            .fillMaxWidth()
+                            .height(scannerHeight)
+                            .offset(y = with(LocalDensity.current) {
+                                (scanAnimationOffset.value * (boxHeight - scannerHeight)).toPx().dp
+                            })
+                            .background(Color.Blue)
+                            .align(Alignment.TopCenter))
                     }
                 } else {
                     Box(
@@ -249,20 +235,18 @@ fun ColorsBgDetail(navController: NavController) {
                     ) {
 
                         items(colorsList) { color ->
-                            Box(
-                                modifier = Modifier
-                                    .size(80.dp)
-                                    .clip(RoundedCornerShape(12.dp))
-                                    .background(color)
-                                    .border(
-                                        width = 2.dp,
-                                        color = if (color == selectedColor) Color.Black else Color.Transparent,
-                                        shape = RoundedCornerShape(12.dp)
-                                    )
-                                    .clickable {
-                                        selectedColor = color
-                                    }
-                            )
+                            Box(modifier = Modifier
+                                .size(80.dp)
+                                .clip(RoundedCornerShape(12.dp))
+                                .background(color)
+                                .border(
+                                    width = 2.dp,
+                                    color = if (color == selectedColor) Color.Black else Color.Transparent,
+                                    shape = RoundedCornerShape(12.dp)
+                                )
+                                .clickable {
+                                    selectedColor = color
+                                })
                         }
                     }
                 }
@@ -308,8 +292,7 @@ private fun notifyMediaScanner(context: Context, file: File) {
 private fun downloadImageWithBackground(context: Context, bitmap: Bitmap, backgroundColor: Color) {
     try {
         val outputPath = File(
-            context.getExternalFilesDir(Environment.DIRECTORY_PICTURES),
-            "bg_removed_image.jpg"
+            context.getExternalFilesDir(Environment.DIRECTORY_PICTURES), "bg_removed_image.jpg"
         ).absolutePath
 
         val colorInt = backgroundColor.toArgb()

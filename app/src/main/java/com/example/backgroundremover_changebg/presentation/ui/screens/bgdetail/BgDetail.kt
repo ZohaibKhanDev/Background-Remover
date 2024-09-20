@@ -568,24 +568,24 @@ suspend fun saveImageWithBackground(
         val resultBitmap = Bitmap.createBitmap(width, height, Bitmap.Config.ARGB_8888)
         val canvas = Canvas(resultBitmap)
 
-        selectedPhoto?.let {
-            try {
-                val photoBitmap = BitmapFactory.decodeStream(URL(it).openStream())
-                val scaledPhotoBitmap = Bitmap.createScaledBitmap(photoBitmap, width, height, false)
-                canvas.drawBitmap(scaledPhotoBitmap, 0f, 0f, null)
-            } catch (e: Exception) {
-                e.printStackTrace()
-            }
-        } ?: run {
+        if (selectedPhoto == null) {
             selectedColor?.let {
                 canvas.drawColor(it.toArgb())
             } ?: run {
                 canvas.drawColor(Color.White.toArgb())
             }
+        } else {
+            try {
+                val photoBitmap = BitmapFactory.decodeStream(URL(selectedPhoto).openStream())
+                val scaledPhotoBitmap = Bitmap.createScaledBitmap(photoBitmap, width, height, false)
+                canvas.drawBitmap(scaledPhotoBitmap, 0f, 0f, null)
+            } catch (e: Exception) {
+                e.printStackTrace()
+            }
         }
 
-        bgRemovedBitmap?.let {
 
+        bgRemovedBitmap?.let {
             val scaledBgRemovedBitmap = Bitmap.createScaledBitmap(it, width, height, false)
             canvas.drawBitmap(scaledBgRemovedBitmap, 0f, 0f, null)
         }
@@ -601,6 +601,7 @@ suspend fun saveImageWithBackground(
         resultBitmap
     }
 }
+
 
 
 private fun saveImageToMediaStore(context: Context, bitmap: Bitmap) {
