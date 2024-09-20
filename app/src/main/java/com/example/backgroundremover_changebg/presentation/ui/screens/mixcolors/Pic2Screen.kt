@@ -108,8 +108,8 @@ fun Pic2Screen(navController: NavController) {
             Text(text = "Save", color = Color.Magenta, modifier = Modifier.clickable {
 
                 scope.launch {
-                    saveImageWithBackground(
-                        selectedPhoto = selectedBg.toString(),
+                    saveImageWithMixBackground(
+                        selectedBg,
                         selectedColor = null,
                         bgRemovedBitmap,
                         erasedBitmap = null,

@@ -77,11 +77,11 @@ fun Pic6Screen(navController: NavController) {
         while (showOriginalImage) {
             scanAnimationOffset.animateTo(
                 targetValue = 1f,
-                animationSpec = tween(durationMillis = 2500, easing = LinearEasing) // Slower speed
+                animationSpec = tween(durationMillis = 2500, easing = LinearEasing)
             )
             scanAnimationOffset.animateTo(
                 targetValue = 0f,
-                animationSpec = tween(durationMillis = 2500, easing = LinearEasing) // Slower speed
+                animationSpec = tween(durationMillis = 2500, easing = LinearEasing)
             )
         }
     }
@@ -108,8 +108,8 @@ fun Pic6Screen(navController: NavController) {
             Text(text = "Save", color = Color.Magenta, modifier = Modifier.clickable {
 
                 scope.launch {
-                    saveImageWithBackground(
-                        selectedPhoto = selectedBg.toString(),
+                    saveImageWithMixBackground(
+                        selectedBg,
                         selectedColor = null,
                         bgRemovedBitmap,
                         erasedBitmap = null,

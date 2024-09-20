@@ -1,6 +1,13 @@
 package com.example.backgroundremover_changebg.presentation.ui.screens.mixcolors
 
 import android.annotation.SuppressLint
+import android.content.ContentValues
+import android.content.Context
+import android.graphics.Bitmap
+import android.graphics.BitmapFactory
+import android.graphics.Canvas
+import android.os.Environment
+import android.provider.MediaStore
 import androidx.compose.animation.core.Animatable
 import androidx.compose.animation.core.LinearEasing
 import androidx.compose.animation.core.tween
@@ -40,6 +47,7 @@ import androidx.compose.ui.draw.drawWithContent
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.asImageBitmap
+import androidx.compose.ui.graphics.toArgb
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
@@ -48,8 +56,10 @@ import androidx.navigation.NavController
 import com.example.backgroundremover_changebg.R
 import com.example.backgroundremover_changebg.presentation.ui.screens.bgdetail.saveImageWithBackground
 import com.example.backgroundremover_changebg.presentation.viewmodel.MainViewModel
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 import org.koin.compose.koinInject
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -108,8 +118,8 @@ fun Pic3Screen(navController: NavController) {
             Text(text = "Save", color = Color.Magenta, modifier = Modifier.clickable {
 
                 scope.launch {
-                    saveImageWithBackground(
-                        selectedPhoto = selectedBg.toString(),
+                    saveImageWithMixBackground(
+                        selectedBg,
                         selectedColor = null,
                         bgRemovedBitmap,
                         erasedBitmap = null,
@@ -215,6 +225,70 @@ fun Pic3Screen(navController: NavController) {
                     }
                 }
             }
+        }
+    }
+}
+
+
+suspend fun saveImageWithMixBackground(
+    selectedPhoto: Int?,
+    selectedColor: Color?,
+    bgRemovedBitmap: Bitmap?,
+    erasedBitmap: Bitmap?,
+    context: Context
+): Bitmap {
+    return withContext(Dispatchers.Default) {
+        val width = 1080
+        val height = 1920
+        val resultBitmap = Bitmap.createBitmap(width, height, Bitmap.Config.ARGB_8888)
+        val canvas = Canvas(resultBitmap)
+
+        if (selectedPhoto == null) {
+            selectedColor?.let {
+                canvas.drawColor(it.toArgb())
+            } ?: run {
+                canvas.drawColor(Color.White.toArgb())
+            }
+        } else {
+            try {
+                val photoBitmap = BitmapFactory.decodeResource(context.resources, selectedPhoto)
+                val scaledPhotoBitmap = Bitmap.createScaledBitmap(photoBitmap, width, height, false)
+                canvas.drawBitmap(scaledPhotoBitmap, 0f, 0f, null)
+            } catch (e: Exception) {
+                e.printStackTrace()
+            }
+        }
+
+        bgRemovedBitmap?.let {
+            val scaledBgRemovedBitmap = Bitmap.createScaledBitmap(it, width, height, false)
+            canvas.drawBitmap(scaledBgRemovedBitmap, 0f, 0f, null)
+        }
+
+        erasedBitmap?.let {
+            val scaledErasedBitmap = Bitmap.createScaledBitmap(it, width, height, false)
+            canvas.drawBitmap(scaledErasedBitmap, 0f, 0f, null)
+        }
+
+        saveImageToMediaStore(context, resultBitmap)
+
+        resultBitmap
+    }
+}
+
+private fun saveImageToMediaStore(context: Context, bitmap: Bitmap) {
+    val filename = "image_${System.currentTimeMillis()}.jpg"
+    val values = ContentValues().apply {
+        put(MediaStore.Images.Media.DISPLAY_NAME, filename)
+        put(MediaStore.Images.Media.MIME_TYPE, "image/jpeg")
+        put(MediaStore.Images.Media.RELATIVE_PATH, Environment.DIRECTORY_PICTURES)
+    }
+
+    val resolver = context.contentResolver
+    val uri = resolver.insert(MediaStore.Images.Media.EXTERNAL_CONTENT_URI, values)
+
+    uri?.let {
+        resolver.openOutputStream(it)?.use { outputStream ->
+            bitmap.compress(Bitmap.CompressFormat.JPEG, 100, outputStream)
         }
     }
 }

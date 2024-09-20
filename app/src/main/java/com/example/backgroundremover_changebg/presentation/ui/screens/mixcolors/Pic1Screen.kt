@@ -120,8 +120,8 @@ fun Pic1Screen(navController: NavController) {
         }, actions = {
             Text(text = "Save", color = Color.Magenta, modifier = Modifier.clickable {
                 scope.launch {
-                    saveImageWithBackground(
-                        selectedPhoto = selectedBg.toString(),
+                    saveImageWithMixBackground(
+                        selectedBg,
                         selectedColor = null,
                         bgRemovedBitmap,
                         erasedBitmap = null,
