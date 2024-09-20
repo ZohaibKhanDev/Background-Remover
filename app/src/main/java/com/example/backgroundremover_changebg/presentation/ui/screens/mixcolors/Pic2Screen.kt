@@ -151,7 +151,7 @@ fun Pic2Screen(navController: NavController) {
             if (showOriginalImage) {
                 Box(
                     modifier = Modifier
-                        .size(320.dp)
+                        .size(350.dp)
                         .clip(CircleShape)
                         .background(Color.White),
                     contentAlignment = Alignment.Center
@@ -169,7 +169,7 @@ fun Pic2Screen(navController: NavController) {
 
                     Box(
                         modifier = Modifier
-                            .size(320.dp)
+                            .size(350.dp)
                             .clip(CircleShape)
                             .background(Color.Transparent)
                             .drawWithContent {
@@ -187,7 +187,7 @@ fun Pic2Screen(navController: NavController) {
             } else {
                 Box(
                     modifier = Modifier
-                        .size(320.dp)
+                        .size(350.dp)
                         .clip(CircleShape)
                         .background(Color.White)
                         .border(BorderStroke(1.dp, Color.LightGray), CircleShape),
@@ -196,7 +196,7 @@ fun Pic2Screen(navController: NavController) {
                     Image(
                         painter = painterResource(id = selectedBg ?: R.drawable.bg2),
                         contentDescription = null,
-                        contentScale = ContentScale.Crop,
+                        contentScale = ContentScale.Fit,
                         modifier = Modifier
                             .fillMaxSize()
                             .clip(CircleShape)
