@@ -77,11 +77,11 @@ fun Pic2Screen(navController: NavController) {
         while (showOriginalImage) {
             scanAnimationOffset.animateTo(
                 targetValue = 1f,
-                animationSpec = tween(durationMillis = 2500, easing = LinearEasing) // Slower speed
+                animationSpec = tween(durationMillis = 2500, easing = LinearEasing)
             )
             scanAnimationOffset.animateTo(
                 targetValue = 0f,
-                animationSpec = tween(durationMillis = 2500, easing = LinearEasing) // Slower speed
+                animationSpec = tween(durationMillis = 2500, easing = LinearEasing)
             )
         }
     }
@@ -106,7 +106,6 @@ fun Pic2Screen(navController: NavController) {
                 modifier = Modifier.clickable { navController.navigateUp() })
         }, actions = {
             Text(text = "Save", color = Color.Magenta, modifier = Modifier.clickable {
-
                 scope.launch {
                     saveImageWithMixBackground(
                         selectedBg,
@@ -196,7 +195,7 @@ fun Pic2Screen(navController: NavController) {
                     Image(
                         painter = painterResource(id = selectedBg ?: R.drawable.bg2),
                         contentDescription = null,
-                        contentScale = ContentScale.Fit,
+                        contentScale = ContentScale.None,
                         modifier = Modifier
                             .fillMaxSize()
                             .clip(CircleShape)
@@ -206,7 +205,7 @@ fun Pic2Screen(navController: NavController) {
                         Image(
                             bitmap = it.asImageBitmap(),
                             contentDescription = "",
-                            contentScale = ContentScale.Crop,
+                            contentScale = ContentScale.Fit,
                             modifier = Modifier
                                 .fillMaxSize()
                                 .clip(CircleShape)

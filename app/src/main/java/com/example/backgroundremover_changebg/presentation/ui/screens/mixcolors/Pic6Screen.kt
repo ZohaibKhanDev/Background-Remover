@@ -105,14 +105,13 @@ fun Pic6Screen(navController: NavController) {
         showOriginalImage = false
     }
 
-    val context = LocalContext.current
-    val scope = rememberCoroutineScope()
     val mixColorBg = listOf(
         R.drawable.bg1, R.drawable.bg2, R.drawable.bg3, R.drawable.bg4,
         R.drawable.bg5, R.drawable.bg6, R.drawable.bg7, R.drawable.bg8,
         R.drawable.bg9, R.drawable.bg10, R.drawable.bg11,
     )
-
+    val context = LocalContext.current
+    val scope = rememberCoroutineScope()
     Scaffold(topBar = {
         TopAppBar(title = { /*TODO*/ }, navigationIcon = {
             Text(
@@ -120,30 +119,17 @@ fun Pic6Screen(navController: NavController) {
                 color = Color.Blue,
                 modifier = Modifier.clickable { navController.navigateUp() })
         }, actions = {
-
             Text(text = "Save", color = Color.Magenta, modifier = Modifier.clickable {
                 scope.launch {
-                    try {
-                        bgRemovedBitmap?.let { bitmap ->
-                            val circularBitmap = clipBitmapToCircle(bitmap)
-                            selectedBg?.let { bgResId ->
-                                saveImageToGallery(
-                                    context,
-                                    bgResId,
-                                    circularBitmap,
-                                    "ProfilePic_${System.currentTimeMillis()}"
-                                )
-                            } ?: run {
-                                Log.e("SaveImage", "Background resource ID is null")
-                            }
-                        }
-                    } catch (e: Exception) {
-                        Log.e("SaveImage", "Error saving image: ${e.message}")
-                    }
+                    saveImageWithMixBackground(
+                        selectedBg,
+                        selectedColor = null,
+                        bgRemovedBitmap,
+                        erasedBitmap = null,
+                        context
+                    )
                 }
             })
-
-
         }, colors = TopAppBarDefaults.topAppBarColors(containerColor = Color.White))
     }, bottomBar = {
         BottomAppBar(containerColor = Color.White) {
@@ -223,7 +209,7 @@ fun Pic6Screen(navController: NavController) {
                     Image(
                         painter = painterResource(id = selectedBg ?: R.drawable.bg6),
                         contentDescription = null,
-                        contentScale = ContentScale.Fit,
+                        contentScale = ContentScale.None,
                         modifier = Modifier
                             .fillMaxSize()
                             .clip(CircleShape)
@@ -233,7 +219,7 @@ fun Pic6Screen(navController: NavController) {
                         Image(
                             bitmap = it.asImageBitmap(),
                             contentDescription = "",
-                            contentScale = ContentScale.Crop,
+                            contentScale = ContentScale.Fit,
                             modifier = Modifier
                                 .fillMaxSize()
                                 .clip(CircleShape)

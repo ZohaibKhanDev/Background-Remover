@@ -87,11 +87,11 @@ fun Pic3Screen(navController: NavController) {
         while (showOriginalImage) {
             scanAnimationOffset.animateTo(
                 targetValue = 1f,
-                animationSpec = tween(durationMillis = 2500, easing = LinearEasing) // Slower speed
+                animationSpec = tween(durationMillis = 2500, easing = LinearEasing)
             )
             scanAnimationOffset.animateTo(
                 targetValue = 0f,
-                animationSpec = tween(durationMillis = 2500, easing = LinearEasing) // Slower speed
+                animationSpec = tween(durationMillis = 2500, easing = LinearEasing)
             )
         }
     }
@@ -100,14 +100,14 @@ fun Pic3Screen(navController: NavController) {
         delay(5000)
         showOriginalImage = false
     }
-    val context = LocalContext.current
-    val scope = rememberCoroutineScope()
+
     val mixColorBg = listOf(
         R.drawable.bg1, R.drawable.bg2, R.drawable.bg3, R.drawable.bg4,
         R.drawable.bg5, R.drawable.bg6, R.drawable.bg7, R.drawable.bg8,
         R.drawable.bg9, R.drawable.bg10, R.drawable.bg11,
     )
-
+    val context = LocalContext.current
+    val scope = rememberCoroutineScope()
     Scaffold(topBar = {
         TopAppBar(title = { /*TODO*/ }, navigationIcon = {
             Text(
@@ -116,7 +116,6 @@ fun Pic3Screen(navController: NavController) {
                 modifier = Modifier.clickable { navController.navigateUp() })
         }, actions = {
             Text(text = "Save", color = Color.Magenta, modifier = Modifier.clickable {
-
                 scope.launch {
                     saveImageWithMixBackground(
                         selectedBg,
@@ -206,7 +205,7 @@ fun Pic3Screen(navController: NavController) {
                     Image(
                         painter = painterResource(id = selectedBg ?: R.drawable.bg3),
                         contentDescription = null,
-                        contentScale = ContentScale.Fit,
+                        contentScale = ContentScale.None,
                         modifier = Modifier
                             .fillMaxSize()
                             .clip(CircleShape)
@@ -216,7 +215,7 @@ fun Pic3Screen(navController: NavController) {
                         Image(
                             bitmap = it.asImageBitmap(),
                             contentDescription = "",
-                            contentScale = ContentScale.Crop,
+                            contentScale = ContentScale.Fit,
                             modifier = Modifier
                                 .fillMaxSize()
                                 .clip(CircleShape)
