@@ -21,6 +21,7 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Scaffold
@@ -40,6 +41,7 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.asImageBitmap
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
@@ -82,7 +84,7 @@ fun Facebook_Post(navController: NavController) {
         delay(7000)
         isBlurred = true
     }
-
+    val context = LocalContext.current
     val scope = rememberCoroutineScope()
     Scaffold(topBar = {
         TopAppBar(title = {}, navigationIcon = {
@@ -93,11 +95,19 @@ fun Facebook_Post(navController: NavController) {
                     navController.navigateUp()
                 })
         }, actions = {
-            Text(text = "Save", color = Color.Magenta, modifier = Modifier.clickable {
-                scope.launch {
-                    downloadImageWithSize(bitmap.toString(), size = Size(370, 282))
+            Text(
+                text = "Save",
+                color = Color.Magenta,
+                modifier = Modifier.clickable {
+                    scope.launch {
+                        val downloadedBitmap =
+                            downloadImageWithSize(bgbitmap.toString(), Size(370, 282))
+                        downloadedBitmap?.let {
+                            saveImageToMediaStore(context, it, Size(370, 282))
+                        }
+                    }
                 }
-            })
+            )
         })
     }) {
         Box(
@@ -110,8 +120,8 @@ fun Facebook_Post(navController: NavController) {
                 bitmap?.let {
                     Box(
                         modifier = Modifier
-                            .fillMaxWidth()
-                            .height(482.dp)
+                            .width(1200.dp)
+                            .height(630.dp)
                             .border(
                                 BorderStroke(1.dp, color = Color.Gray),
                                 shape = RoundedCornerShape(12.dp)
@@ -144,13 +154,12 @@ fun Facebook_Post(navController: NavController) {
                 bgbitmap?.let {
                     Box(
                         modifier = Modifier
-                            .fillMaxWidth()
-                            .height(482.dp)
+                            .width(1200.dp)
+                            .height(630.dp)
                             .border(
                                 BorderStroke(1.dp, color = Color.Gray),
                                 shape = RoundedCornerShape(12.dp)
                             )
-                            .padding(horizontal = 20.dp)
                             .clip(RoundedCornerShape(12.dp))
                             .background(Color.Gray)
                     ) {
@@ -172,9 +181,7 @@ suspend fun downloadImageWithSize(url: String, size: Size): Bitmap? {
         try {
             val inputStream = URL(url).openStream()
             val originalBitmap = BitmapFactory.decodeStream(inputStream)
-            val scaledBitmap = Bitmap.createScaledBitmap(
-                originalBitmap, size.width, size.height, true
-            )
+            val scaledBitmap = Bitmap.createScaledBitmap(originalBitmap, size.width, size.height, true)
             scaledBitmap
         } catch (e: Exception) {
             e.printStackTrace()
@@ -202,3 +209,4 @@ fun saveImageToMediaStore(context: Context, bitmap: Bitmap, size: Size) {
         }
     }
 }
+

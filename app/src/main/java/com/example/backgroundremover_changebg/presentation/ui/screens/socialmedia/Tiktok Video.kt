@@ -1,5 +1,6 @@
 package com.example.backgroundremover_changebg.presentation.ui.screens.socialmedia
 
+import android.util.Size
 import androidx.compose.animation.core.Animatable
 import androidx.compose.animation.core.LinearEasing
 import androidx.compose.animation.core.tween
@@ -26,6 +27,7 @@ import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -34,6 +36,7 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.asImageBitmap
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
@@ -49,10 +52,12 @@ import org.koin.compose.koinInject
 fun TiktokVideo(navController: NavController) {
     val viewModel: MainViewModel = koinInject()
     val bitmap by viewModel.originalBitmap.collectAsState()
+    val bgbitmap by viewModel.originalBitmap.collectAsState()
 
     var isBlurred by remember { mutableStateOf(false) }
     val scanAnimationOffset = remember { Animatable(0f) }
-
+    val context = LocalContext.current
+    val scope = rememberCoroutineScope()
 
     LaunchedEffect(Unit) {
         launch {
@@ -82,9 +87,19 @@ fun TiktokVideo(navController: NavController) {
                     navController.navigateUp()
                 })
         }, actions = {
-            Text(text = "Save", color = Color.Magenta, modifier = Modifier.clickable {
-
-            })
+            Text(
+                text = "Save",
+                color = Color.Magenta,
+                modifier = Modifier.clickable {
+                    scope.launch {
+                        val downloadedBitmap =
+                            downloadImageWithSize(bgbitmap.toString(), Size(370, 282))
+                        downloadedBitmap?.let {
+                            saveImageToMediaStore(context, it, Size(370, 282))
+                        }
+                    }
+                }
+            )
         })
     }) {
         Box(
@@ -93,35 +108,58 @@ fun TiktokVideo(navController: NavController) {
                 .padding(top = it.calculateTopPadding()),
             contentAlignment = Alignment.Center
         ) {
-            bitmap?.let {
-                Box(
-                    modifier = Modifier
-                        .width(358.dp)
-                        .height(680.dp)
-                        .border(
-                            BorderStroke(1.dp, color = Color.Gray),
-                            shape = RoundedCornerShape(12.dp)
+            if (!isBlurred) {
+                bitmap?.let {
+                    Box(
+                        modifier = Modifier
+                            .width(1080.dp)
+                            .height(1920.dp)
+                            .border(
+                                BorderStroke(1.dp, color = Color.Gray),
+                                shape = RoundedCornerShape(12.dp)
+                            )
+                            .padding(horizontal = 20.dp)
+                            .clip(RoundedCornerShape(12.dp))
+                            .background(Color.Gray)
+                    ) {
+                        Image(
+                            bitmap = it.asImageBitmap(),
+                            contentDescription = "",
+                            contentScale = ContentScale.Crop,
+                            modifier = Modifier.fillMaxSize()
                         )
-                        .padding(horizontal = 20.dp)
-                        .clip(RoundedCornerShape(12.dp))
-                        .background(Color.Gray)
-                ) {
-                    Image(
-                        bitmap = it.asImageBitmap(),
-                        contentDescription = "",
-                        contentScale = ContentScale.Crop,
-                        modifier = Modifier.fillMaxSize()
-                    )
 
-                    if (!isBlurred) {
-                        Box(
-                            modifier = Modifier
-                                .fillMaxWidth()
-                                .height(6.dp)
-                                .offset(y = with(LocalDensity.current) {
-                                    (scanAnimationOffset.value * 770).dp
-                                })
-                                .background(Color.Blue)
+                        if (!isBlurred) {
+                            Box(
+                                modifier = Modifier
+                                    .fillMaxWidth()
+                                    .height(6.dp)
+                                    .offset(y = with(LocalDensity.current) {
+                                        (scanAnimationOffset.value * 770).dp
+                                    })
+                                    .background(Color.Blue)
+                            )
+                        }
+                    }
+                }
+            } else {
+                bgbitmap?.let {
+                    Box(
+                        modifier = Modifier
+                            .width(1080.dp)
+                            .height(1920.dp)
+                            .border(
+                                BorderStroke(1.dp, color = Color.Gray),
+                                shape = RoundedCornerShape(12.dp)
+                            )
+                            .clip(RoundedCornerShape(12.dp))
+                            .background(Color.Gray)
+                    ) {
+                        Image(
+                            bitmap = it.asImageBitmap(),
+                            contentDescription = "",
+                            contentScale = ContentScale.Crop,
+                            modifier = Modifier.fillMaxSize()
                         )
                     }
                 }
