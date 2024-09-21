@@ -63,7 +63,7 @@ fun PhotoEditorScreen(modifier: Modifier = Modifier, imageUri: Uri?) {
             Spacer(modifier = Modifier.width(8.dp))
 
             Button(onClick = {
-                photoEditor?.setBrushDrawingMode(true)
+
             }) {
                 Text("Draw")
             }

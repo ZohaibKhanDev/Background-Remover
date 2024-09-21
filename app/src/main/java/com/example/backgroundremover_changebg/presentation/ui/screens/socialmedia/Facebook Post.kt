@@ -220,7 +220,7 @@ fun Facebook_Post(navController: NavController) {
 
                 item {
                     ToolBoxItem(icon = Icons.Outlined.Edit, label = "Edit") {
-
+                        photoEditor?.setBrushDrawingMode(true)
                     }
                 }
             }
