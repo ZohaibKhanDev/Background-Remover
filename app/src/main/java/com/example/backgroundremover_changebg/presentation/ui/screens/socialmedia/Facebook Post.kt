@@ -34,6 +34,7 @@ import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.foundation.lazy.grid.items
+import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
@@ -559,6 +560,18 @@ fun Facebook_Post(navController: NavController) {
                 }
             }
 
+            val color = listOf(
+                Color.Gray,
+                Color.White,
+                Color.LightGray,
+                Color.DarkGray,
+                Color.Blue,
+                Color.Black,
+                Color.Transparent,
+                Color.Red,
+                Color.Yellow,
+                Color.Magenta
+            )
 
             if (showDialog) {
                 AlertDialog(onDismissRequest = { showDialog = false },
@@ -571,6 +584,26 @@ fun Facebook_Post(navController: NavController) {
                             ColorPicker { color ->
                                 textColor = color
                             }
+
+                            Spacer(modifier = Modifier.height(15.dp))
+
+                            LazyRow(
+                                modifier = Modifier.fillMaxWidth(),
+                                horizontalArrangement = Arrangement.SpaceBetween,
+                                verticalAlignment = Alignment.CenterVertically
+                            ) {
+                                items(color) {
+                                    Box(
+                                        modifier = Modifier
+                                            .size(20.dp)
+                                            .background(it)
+                                            .clickable {
+                                                textColor=it
+                                            })
+                                }
+
+                            }
+
                         }
                     },
                     confirmButton = {
