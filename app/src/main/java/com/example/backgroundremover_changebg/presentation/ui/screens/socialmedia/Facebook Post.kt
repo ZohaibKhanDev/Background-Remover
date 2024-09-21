@@ -9,8 +9,6 @@ import android.graphics.BitmapFactory
 import android.os.Environment
 import android.provider.MediaStore
 import android.util.Size
-import android.view.MotionEvent
-import android.view.View
 import android.widget.ImageView
 import androidx.compose.animation.core.Animatable
 import androidx.compose.animation.core.LinearEasing
@@ -32,19 +30,17 @@ import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
-import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.foundation.lazy.grid.items
-import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Redo
+import androidx.compose.material.icons.filled.RemoveCircle
 import androidx.compose.material.icons.filled.Undo
 import androidx.compose.material.icons.outlined.Brush
-import androidx.compose.material.icons.outlined.ContentCut
-import androidx.compose.material.icons.outlined.Crop
 import androidx.compose.material.icons.outlined.Edit
 import androidx.compose.material.icons.outlined.EmojiEmotions
 import androidx.compose.material.icons.outlined.Filter
@@ -57,6 +53,7 @@ import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.BottomAppBar
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
+import androidx.compose.material3.ModalBottomSheet
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
@@ -82,6 +79,7 @@ import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalDensity
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -90,11 +88,9 @@ import androidx.navigation.NavController
 import coil.compose.AsyncImage
 import com.example.backgroundremover_changebg.R
 import com.example.backgroundremover_changebg.presentation.viewmodel.MainViewModel
-import ja.burhanrashid52.photoeditor.OnPhotoEditorListener
 import ja.burhanrashid52.photoeditor.PhotoEditor
 import ja.burhanrashid52.photoeditor.PhotoEditorView
 import ja.burhanrashid52.photoeditor.PhotoFilter
-import ja.burhanrashid52.photoeditor.ViewType
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
@@ -118,6 +114,7 @@ fun Facebook_Post(navController: NavController) {
     val context = LocalContext.current
     val scope = rememberCoroutineScope()
     var showDialog by remember { mutableStateOf(false) }
+    var stikerShowDialog by remember { mutableStateOf(false) }
     var filter by remember { mutableStateOf(false) }
     var colorshowDialog by remember { mutableStateOf(false) }
     var emojiShowDialog by remember { mutableStateOf(false) }
@@ -173,10 +170,226 @@ fun Facebook_Post(navController: NavController) {
         if (filter) {
             BottomAppBar {
                 LazyRow(
-                    modifier = Modifier.fillMaxWidth(),
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .clickable {
+/*
+                        photoEditor?.setFilterEffect(PhotoFilter.TINT)
+*//*
+                                                photoEditor?.setFilterEffect(PhotoFilter.VIGNETTE)
+                        */
+
+                            /*photoEditor?.setFilterEffect(PhotoFilter.CONTRAST)*//*photoEditor?.setFilterEffect(PhotoFilter.AUTO_FIX)*//*photoEditor?.setFilterEffect(PhotoFilter.BLACK_WHITE)*//*photoEditor?.setFilterEffect(PhotoFilter.BRIGHTNESS)*//*photoEditor?.setFilterEffect(PhotoFilter.CROSS_PROCESS)*//*photoEditor?.setFilterEffect(PhotoFilter.DOCUMENTARY)*//*photoEditor?.setFilterEffect(PhotoFilter.TEMPERATURE)*/
+                        },
                     horizontalArrangement = Arrangement.SpaceBetween,
                     verticalAlignment = Alignment.CenterVertically
                 ) {
+                    item {
+                        Box(
+                            modifier = Modifier
+                                .border(
+                                    BorderStroke(2.dp, color = Color.White), shape = CircleShape
+                                )
+                                .size(70.dp)
+                                .clickable {
+                                    photoEditor?.setFilterEffect(PhotoFilter.AUTO_FIX)
+                                },
+
+                            contentAlignment = Alignment.Center
+                        ) {
+                            Image(
+                                painter = painterResource(id = R.drawable.autofix),
+                                contentDescription = "",
+                                modifier = Modifier
+                                    .fillMaxSize()
+                                    .clip(CircleShape),
+                                contentScale = ContentScale.Crop
+                            )
+                        }
+
+
+                        Box(
+                            modifier = Modifier
+                                .border(
+                                    BorderStroke(2.dp, color = Color.White), shape = CircleShape
+                                )
+                                .size(70.dp)
+                                .clickable {
+                                    photoEditor?.setFilterEffect(PhotoFilter.TINT)
+                                },
+
+                            contentAlignment = Alignment.Center
+                        ) {
+                            Image(
+                                painter = painterResource(id = R.drawable.tint),
+                                contentDescription = "",
+                                modifier = Modifier
+                                    .fillMaxSize()
+                                    .clip(CircleShape),
+                                contentScale = ContentScale.Crop
+                            )
+                        }
+
+
+                        Box(
+                            modifier = Modifier
+                                .border(
+                                    BorderStroke(2.dp, color = Color.White), shape = CircleShape
+                                )
+                                .size(70.dp)
+                                .clickable {
+                                    photoEditor?.setFilterEffect(PhotoFilter.VIGNETTE)
+                                },
+
+                            contentAlignment = Alignment.Center
+                        ) {
+                            Image(
+                                painter = painterResource(id = R.drawable.vignette),
+                                contentDescription = "",
+                                modifier = Modifier
+                                    .fillMaxSize()
+                                    .clip(CircleShape),
+                                contentScale = ContentScale.Crop
+                            )
+                        }
+
+
+                        Box(
+                            modifier = Modifier
+                                .border(
+                                    BorderStroke(2.dp, color = Color.White), shape = CircleShape
+                                )
+                                .size(70.dp)
+                                .clickable {
+                                    photoEditor?.setFilterEffect(PhotoFilter.CONTRAST)
+                                },
+
+                            contentAlignment = Alignment.Center
+                        ) {
+                            Image(
+                                painter = painterResource(id = R.drawable.contrast),
+                                contentDescription = "",
+                                modifier = Modifier
+                                    .fillMaxSize()
+                                    .clip(CircleShape),
+                                contentScale = ContentScale.Crop
+                            )
+                        }
+
+                        Box(
+                            modifier = Modifier
+                                .border(
+                                    BorderStroke(2.dp, color = Color.White), shape = CircleShape
+                                )
+                                .size(70.dp)
+                                .clickable {
+                                    photoEditor?.setFilterEffect(PhotoFilter.BLACK_WHITE)
+                                },
+
+                            contentAlignment = Alignment.Center
+                        ) {
+                            Image(
+                                painter = painterResource(id = R.drawable.black_white),
+                                contentDescription = "",
+                                modifier = Modifier
+                                    .fillMaxSize()
+                                    .clip(CircleShape),
+                                contentScale = ContentScale.Crop
+                            )
+                        }
+
+
+                        Box(
+                            modifier = Modifier
+                                .border(
+                                    BorderStroke(2.dp, color = Color.White), shape = CircleShape
+                                )
+                                .size(70.dp)
+                                .clickable {
+                                    photoEditor?.setFilterEffect(PhotoFilter.BRIGHTNESS)
+                                },
+
+                            contentAlignment = Alignment.Center
+                        ) {
+                            Image(
+                                painter = painterResource(id = R.drawable.brightness),
+                                contentDescription = "",
+                                modifier = Modifier
+                                    .fillMaxSize()
+                                    .clip(CircleShape),
+                                contentScale = ContentScale.Crop
+                            )
+                        }
+
+                        Box(
+                            modifier = Modifier
+                                .border(
+                                    BorderStroke(2.dp, color = Color.White), shape = CircleShape
+                                )
+                                .size(70.dp)
+                                .clickable {
+                                    photoEditor?.setFilterEffect(PhotoFilter.CROSS_PROCESS)
+                                },
+
+                            contentAlignment = Alignment.Center
+                        ) {
+                            Image(
+                                painter = painterResource(id = R.drawable.cross_process),
+                                contentDescription = "",
+                                modifier = Modifier
+                                    .fillMaxSize()
+                                    .clip(CircleShape),
+                                contentScale = ContentScale.Crop
+                            )
+                        }
+
+
+                        Box(
+                            modifier = Modifier
+                                .border(
+                                    BorderStroke(2.dp, color = Color.White), shape = CircleShape
+                                )
+                                .size(70.dp)
+                                .clickable {
+                                    photoEditor?.setFilterEffect(PhotoFilter.DOCUMENTARY)
+                                },
+
+                            contentAlignment = Alignment.Center
+                        ) {
+                            Image(
+                                painter = painterResource(id = R.drawable.documentry),
+                                contentDescription = "",
+                                modifier = Modifier
+                                    .fillMaxSize()
+                                    .clip(CircleShape),
+                                contentScale = ContentScale.Crop
+                            )
+                        }
+
+
+                        Box(
+                            modifier = Modifier
+                                .border(
+                                    BorderStroke(2.dp, color = Color.White), shape = CircleShape
+                                )
+                                .size(70.dp)
+                                .clickable {
+                                    photoEditor?.setFilterEffect(PhotoFilter.TEMPERATURE)
+                                },
+
+                            contentAlignment = Alignment.Center
+                        ) {
+                            Image(
+                                painter = painterResource(id = R.drawable.temperature),
+                                contentDescription = "",
+                                modifier = Modifier
+                                    .fillMaxSize()
+                                    .clip(CircleShape),
+                                contentScale = ContentScale.Crop
+                            )
+                        }
+
+                    }
 
                 }
             }
@@ -193,7 +406,7 @@ fun Facebook_Post(navController: NavController) {
                     .height(600.dp)
                     .border(BorderStroke(1.dp, Color.Gray), shape = RoundedCornerShape(12.dp))
                     .clip(RoundedCornerShape(12.dp))
-                    .background(Color.LightGray)
+                    .background(Color.White)
                     .padding(8.dp),
                 contentAlignment = Alignment.Center
             ) {
@@ -298,14 +511,13 @@ fun Facebook_Post(navController: NavController) {
                 item {
                     ToolBoxItem(icon = Icons.Outlined.StickyNote2, label = "Sticker") {
                         selectedTool = Tool.Sticker
-                        showDialog = true
-                        filter = false
+                        stikerShowDialog = false
                     }
                 }
 
 
                 item {
-                    ToolBoxItem(icon = Icons.Outlined.ContentCut, label = "Eraser") {
+                    ToolBoxItem(icon = Icons.Default.RemoveCircle, label = "Eraser") {
                         photoEditor?.setBrushDrawingMode(false)
                         photoEditor?.brushEraser()
                     }
@@ -318,6 +530,35 @@ fun Facebook_Post(navController: NavController) {
                     }
                 }
             }
+
+            if (selectedTool == Tool.Sticker) {
+                ModalBottomSheet(onDismissRequest = { stikerShowDialog }) {
+                    LazyVerticalGrid(
+                        columns = GridCells.Fixed(4),
+                        modifier = Modifier.fillMaxWidth(),
+                        verticalArrangement = Arrangement.spacedBy(10.dp),
+                        horizontalArrangement = Arrangement.SpaceEvenly
+                    ) {
+                        items(stickerList) { sticker ->
+                            AsyncImage(model = sticker.resourceId,
+                                contentDescription = null,
+                                modifier = Modifier
+                                    .size(50.dp)
+                                    .clickable {
+                                        stikerShowDialog = false
+                                        val stickerBitmap = decodeSampledBitmapFromResource(
+                                            context.resources, sticker.resourceId, 100, 100
+                                        )
+                                        stickerBitmap?.let {
+                                            photoEditor?.addImage(it)
+                                            selectedTool = null
+                                        }
+                                    })
+                        }
+                    }
+                }
+            }
+
 
             if (showDialog) {
                 AlertDialog(onDismissRequest = { showDialog = false },
@@ -429,6 +670,86 @@ fun Facebook_Post(navController: NavController) {
                     "💌",
                     "🏳️",
                     "🏴‍☠️",
+                    "🐶",
+                    "🐕",
+                    "🐩",
+                    "🐺",
+                    "🐱",
+                    "🐈",
+                    "🐾",
+                    "🐻",
+                    "🐼",
+                    "🐨",
+                    "🐯",
+                    "🦁",
+                    "🦓",
+                    "🦒",
+                    "🐘",
+                    "🐪",
+                    "🐫",
+                    "🐍",
+                    "🐢",
+                    "🦎",
+                    "🐬",
+                    "🐳",
+                    "🐋",
+                    "🐟",
+                    "🐠",
+                    "🐡",
+                    "🦈",
+                    "🐅",
+                    "🦊",
+                    "🐉",
+                    "🍏",
+                    "🍎",
+                    "🍐",
+                    "🍊",
+                    "🍋",
+                    "🍌",
+                    "🍉",
+                    "🍇",
+                    "🍓",
+                    "🍈",
+                    "🍒",
+                    "🍑",
+                    "🥭",
+                    "🍍",
+                    "🥥",
+                    "🥝",
+                    "🍅",
+                    "🥑",
+                    "🍆",
+                    "🥔",
+                    "🥕",
+                    "🌽",
+                    "🌶️",
+                    "🥬",
+                    "🥦",
+                    "🍄",
+                    "🍞",
+                    "🥖",
+                    "🧀",
+                    "🍗",
+                    "🌸",
+                    "🌼",
+                    "🌻",
+                    "🌺",
+                    "🌹",
+                    "🌷",
+                    "🌾",
+                    "🌿",
+                    "🍂",
+                    "🍃",
+                    "🌳",
+                    "🌲",
+                    "🌵",
+                    "🌴",
+                    "🌈",
+                    "🌞",
+                    "🌝",
+                    "🌚",
+                    "🌪️",
+                    "🌈",
                     "💡",
                     "🔔",
                     "🎉",
@@ -471,8 +792,11 @@ fun Facebook_Post(navController: NavController) {
                     "🔨"
                 )
 
-                AlertDialog(onDismissRequest = { }, title = { Text("Select Emoji") }, text = {
-                    LazyVerticalGrid(columns = GridCells.FixedSize(25.dp)) {
+
+                ModalBottomSheet(onDismissRequest = { emojiShowDialog = false }) {
+                    LazyVerticalGrid(
+                        columns = GridCells.FixedSize(36.dp), modifier = Modifier.fillMaxSize()
+                    ) {
                         items(emojis) { emoji ->
                             Text(text = emoji, modifier = Modifier
                                 .clickable {
@@ -482,17 +806,11 @@ fun Facebook_Post(navController: NavController) {
                                 .padding(8.dp))
                         }
                     }
-                }, confirmButton = {
-                    TextButton(onClick = { emojiShowDialog = false }) {
-                        Text("Close")
-                    }
-                })
+                }
             }
 
             if (colorshowDialog) {
-                AlertDialog(onDismissRequest = { colorshowDialog = false }, confirmButton = {
-                    Text(text = "Ok")
-                }, text = {
+                ModalBottomSheet(onDismissRequest = { colorshowDialog = false }) {
                     if (selectedTool == Tool.Brush) {
                         Row(
                             modifier = Modifier.fillMaxWidth(),
@@ -511,23 +829,28 @@ fun Facebook_Post(navController: NavController) {
                             }
                         }
                     }
-                })
+                }
             }
         }
     }
 }
 
-@Composable
-fun showEmojiPickerDialog(onEmojiSelected: (String) -> Unit) {
-
-}
-
+val stickerList = listOf(
+    Sticker(R.drawable.pic5),
+    Sticker(R.drawable.fblogo),
+    Sticker(R.drawable.instalogo),
+    Sticker(R.drawable.sticker1),
+    Sticker(R.drawable.sticker2),
+    Sticker(R.drawable.sticker3),
+    Sticker(R.drawable.sticker4),
+    Sticker(R.drawable.sticker5),
+    Sticker(R.drawable.sticker6)
+)
 
 fun PhotoEditor.addText(text: String, color: Color) {
 
     this.addText(text, color.toArgb())
 }
-
 
 @Composable
 fun ColorPicker(onColorSelected: (Color) -> Unit) {
@@ -550,11 +873,6 @@ enum class Tool {
 }
 
 
-val stickerList = listOf(
-    Sticker(R.drawable.pic5), Sticker(R.drawable.fblogo), Sticker(R.drawable.instalogo)
-)
-
-
 data class Sticker(val resourceId: Int)
 
 
@@ -563,9 +881,15 @@ val ColorPalette = listOf(Color.Red, Color.Green, Color.Blue, Color.Yellow, Colo
 
 @Composable
 fun ToolBoxItem(icon: ImageVector, label: String, onClick: () -> Unit) {
+    var select by remember {
+        mutableStateOf(false)
+    }
     Box(modifier = Modifier
         .width(50.dp)
-        .clickable { onClick() }
+        .clickable {
+            select = !select
+            onClick()
+        }
         .background(Color.White)
         .height(58.dp), contentAlignment = Alignment.Center) {
         Column(
@@ -573,9 +897,16 @@ fun ToolBoxItem(icon: ImageVector, label: String, onClick: () -> Unit) {
             horizontalAlignment = Alignment.CenterHorizontally,
             verticalArrangement = Arrangement.spacedBy(9.dp)
         ) {
-            Icon(imageVector = icon, contentDescription = "")
+            Icon(
+                imageVector = icon,
+                contentDescription = "",
+                tint = if (select) Color.Blue else Color.Black
+            )
             Text(
-                text = label, color = Color.Black, fontSize = 15.sp, fontWeight = FontWeight.Medium
+                text = label,
+                color = if (select) Color.Blue else Color.Black,
+                fontSize = 15.sp,
+                fontWeight = FontWeight.Medium
             )
         }
     }
