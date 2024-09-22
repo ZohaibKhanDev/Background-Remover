@@ -1,10 +1,13 @@
 package com.example.backgroundremover_changebg.presentation.ui.screens.socialmedia
 
+import android.annotation.SuppressLint
 import android.graphics.Bitmap
 import android.graphics.BitmapFactory
 import android.net.Uri
+import android.os.Environment
 import android.util.Size
 import android.widget.ImageView
+import android.widget.Toast
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.animation.core.Animatable
@@ -91,10 +94,13 @@ import dev.eren.removebg.RemoveBg
 import ja.burhanrashid52.photoeditor.PhotoEditor
 import ja.burhanrashid52.photoeditor.PhotoEditorView
 import ja.burhanrashid52.photoeditor.PhotoFilter
+import ja.burhanrashid52.photoeditor.SaveFileResult
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import org.koin.compose.koinInject
+import java.io.File
 
+@SuppressLint("MissingPermission")
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun TiktokVideo(navController: NavController) {
@@ -183,20 +189,42 @@ fun TiktokVideo(navController: NavController) {
             Spacer(modifier = Modifier.width(12.dp))
             Icon(imageVector = Icons.Outlined.Undo,
                 contentDescription = "Undo",
-                modifier = Modifier
-                    .clickable {
+                modifier = Modifier.clickable {
                         photoEditor?.redo()
-                    }
-            )
+                    })
 
             Spacer(modifier = Modifier.width(12.dp))
             Icon(imageVector = Icons.Outlined.Redo,
                 contentDescription = "Redo",
-                modifier = Modifier
-                    .clickable {
+                modifier = Modifier.clickable {
                         photoEditor?.undo()
+                    })
+
+
+            Spacer(modifier = Modifier.width(12.dp))
+            Text(text = "Save",
+                fontSize = 18.sp,
+                fontWeight = FontWeight.Medium,
+                color = Color.Magenta,
+                modifier = Modifier.clickable {
+                    scope.launch {
+
+                        val fileName = "image_${System.currentTimeMillis()}.png"
+                        val file = File(
+                            context.getExternalFilesDir(Environment.DIRECTORY_PICTURES), fileName
+                        )
+
+                        val result = photoEditor?.saveAsFile(file.absolutePath)
+
+                        if (result is SaveFileResult.Success) {
+                            Toast.makeText(context, "Image Saved Successfully!", Toast.LENGTH_SHORT)
+                                .show()
+                        } else {
+                            Toast.makeText(context, "Image Save Failed!", Toast.LENGTH_SHORT).show()
+                        }
                     }
-            )
+                })
+
         })
     }, bottomBar = {
 
@@ -204,8 +232,7 @@ fun TiktokVideo(navController: NavController) {
             BottomAppBar(
                 modifier = Modifier
                     .fillMaxWidth()
-                    .height(120.dp),
-                containerColor = Color.White
+                    .height(120.dp), containerColor = Color.White
             ) {
                 if (eraser) {
 
@@ -215,9 +242,7 @@ fun TiktokVideo(navController: NavController) {
                         horizontalAlignment = Alignment.CenterHorizontally
                     ) {
                         Text(
-                            text = "Eraser Size",
-                            fontSize = 23.sp,
-                            fontWeight = FontWeight.SemiBold
+                            text = "Eraser Size", fontSize = 23.sp, fontWeight = FontWeight.SemiBold
                         )
 
                         Slider(value = sliderPosition, onValueChange = { newPosition ->
