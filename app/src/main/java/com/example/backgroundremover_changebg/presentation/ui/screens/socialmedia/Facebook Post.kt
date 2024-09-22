@@ -567,7 +567,6 @@ fun Facebook_Post(navController: NavController) {
                 Color.DarkGray,
                 Color.Blue,
                 Color.Black,
-                Color.Transparent,
                 Color.Red,
                 Color.Yellow,
                 Color.Magenta
