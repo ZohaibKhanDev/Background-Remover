@@ -623,6 +623,7 @@ fun Facebook_Post(navController: NavController) {
                     })
             }
 
+
             if (emojiShowDialog) {
                 val emojis = listOf(
                     "😀",
@@ -920,8 +921,9 @@ fun ToolBoxItem(icon: ImageVector, label: String, onClick: () -> Unit) {
     Box(modifier = Modifier
         .width(50.dp)
         .clickable {
-            select = !select
+            select=true
             onClick()
+            select=false
         }
         .background(Color.White)
         .height(58.dp), contentAlignment = Alignment.Center) {
