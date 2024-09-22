@@ -122,6 +122,8 @@ fun Facebook_Post(navController: NavController) {
     val context = LocalContext.current
     val scope = rememberCoroutineScope()
     var showDialog by remember { mutableStateOf(false) }
+    var selectedColor by remember { mutableStateOf<Color?>(null) }
+    var showColorDialog by remember { mutableStateOf(false) }
     var stikerShowDialog by remember { mutableStateOf(false) }
     var filter by remember { mutableStateOf(false) }
     var colorshowDialog by remember { mutableStateOf(false) }
@@ -202,7 +204,7 @@ fun Facebook_Post(navController: NavController) {
         })
     }, bottomBar = {
 
-        if (eraser || filter){
+        if (eraser || filter) {
             BottomAppBar(
                 modifier = Modifier
                     .fillMaxWidth()
@@ -216,7 +218,11 @@ fun Facebook_Post(navController: NavController) {
                         verticalArrangement = Arrangement.SpaceBetween,
                         horizontalAlignment = Alignment.CenterHorizontally
                     ) {
-                        Text(text = "Eraser Size", fontSize = 23.sp, fontWeight = FontWeight.SemiBold)
+                        Text(
+                            text = "Eraser Size",
+                            fontSize = 23.sp,
+                            fontWeight = FontWeight.SemiBold
+                        )
 
                         Slider(value = sliderPosition, onValueChange = { newPosition ->
                             sliderPosition = newPosition
@@ -229,7 +235,9 @@ fun Facebook_Post(navController: NavController) {
 
                 if (filter) {
                     LazyRow(
-                        modifier = Modifier.fillMaxWidth(),
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .height(100.dp),
                         horizontalArrangement = Arrangement.SpaceBetween,
                         verticalAlignment = Alignment.CenterVertically
                     ) {
@@ -447,7 +455,6 @@ fun Facebook_Post(navController: NavController) {
         }
 
 
-
     }) {
         Column(
             modifier = Modifier
@@ -461,7 +468,7 @@ fun Facebook_Post(navController: NavController) {
                     .border(BorderStroke(1.dp, Color.Gray), shape = RoundedCornerShape(12.dp))
                     .clip(RoundedCornerShape(12.dp))
                     .background(Color.White)
-                    .padding(8.dp),
+                    .padding(17.dp),
                 contentAlignment = Alignment.Center
             ) {
                 if (!isBlurred) {
@@ -498,24 +505,6 @@ fun Facebook_Post(navController: NavController) {
                             imageView.setImageBitmap(it)
                         })
                     }
-
-                    Row(
-                        modifier = Modifier.fillMaxSize(),
-                        verticalAlignment = Alignment.Bottom,
-                        horizontalArrangement = Arrangement.End
-                    ) {
-                        Icon(imageVector = Icons.Default.Undo,
-                            contentDescription = "Undo",
-                            modifier = Modifier.clickable {
-                                photoEditor?.redo()
-                            })
-                        Spacer(modifier = Modifier.width(8.dp))
-                        Icon(imageVector = Icons.Default.Redo,
-                            contentDescription = "Redo",
-                            modifier = Modifier.clickable {
-                                photoEditor?.undo()
-                            })
-                    }
                 }
             }
 
@@ -532,12 +521,15 @@ fun Facebook_Post(navController: NavController) {
                         selectedTool = Tool.Text
                         filter = false
                         showDialog = true
+                        eraser = false
                     }
+
                 }
 
                 item {
                     ToolBoxItem(icon = Icons.Outlined.Filter, label = "Filter") {
                         filter = true
+                        eraser = false
                     }
                 }
 
@@ -545,6 +537,7 @@ fun Facebook_Post(navController: NavController) {
                     ToolBoxItem(icon = Icons.Outlined.Layers, label = "Layers") {
                         bgbitmap?.let { it1 -> photoEditor?.addImage(it1) }
                         filter = false
+                        eraser = false
                     }
                 }
 
@@ -552,6 +545,7 @@ fun Facebook_Post(navController: NavController) {
                     ToolBoxItem(icon = Icons.Outlined.Add, label = "Insert") {
                         filter = false
                         Facebook_Post_Launcher.launch("image/*")
+                        eraser = false
                     }
                 }
 
@@ -560,6 +554,7 @@ fun Facebook_Post(navController: NavController) {
                         selectedTool = Tool.Brush
                         colorshowDialog = true
                         filter = false
+                        eraser = false
                     }
                 }
 
@@ -567,6 +562,7 @@ fun Facebook_Post(navController: NavController) {
                     ToolBoxItem(icon = Icons.Outlined.StickyNote2, label = "Sticker") {
                         selectedTool = Tool.Sticker
                         stikerShowDialog = false
+                        eraser = false
                     }
                 }
 
@@ -583,6 +579,7 @@ fun Facebook_Post(navController: NavController) {
                 item {
                     ToolBoxItem(icon = Icons.Outlined.EmojiEmotions, label = "Emoji") {
                         emojiShowDialog = true
+                        eraser = false
                     }
                 }
             }
@@ -648,10 +645,17 @@ fun Facebook_Post(navController: NavController) {
                             ) {
                                 items(color) {
                                     Box(modifier = Modifier
-                                        .size(20.dp)
+                                        .border(
+                                            if (selectedColor == it) 2.dp else 0.dp,
+                                            if (selectedColor == it) Color.DarkGray else Color.Transparent,
+                                            shape = RoundedCornerShape(4.dp)
+                                        )
+                                        .size(30.dp)
                                         .background(it)
                                         .clickable {
                                             textColor = it
+                                            selectedColor = it
+                                            showColorDialog = true
                                         })
                                 }
 
