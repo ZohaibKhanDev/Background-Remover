@@ -28,3 +28,9 @@ Let's chat about potential projects, job opportunities, or any other collaborati
 | ![Screenshot 10](https://github.com/ZohaibKhanDev/Background-Remover/blob/master/screenshots/10.png) | ![Screenshot 11](https://github.com/ZohaibKhanDev/Background-Remover/blob/master/screenshots/11.png) | ![Screenshot 12](https://github.com/ZohaibKhanDev/Background-Remover/blob/master/screenshots/12.png) |
 | --- | --- | --- |
 | ![Screenshot 13](https://github.com/ZohaibKhanDev/Background-Remover/blob/master/screenshots/13.png) | ![Screenshot 14](https://github.com/ZohaibKhanDev/Background-Remover/blob/master/screenshots/14.png) | ![Screenshot 15](https://github.com/ZohaibKhanDev/Background-Remover/blob/master/screenshots/15.png) |
+| --- | --- | --- |
+| ![Screenshot 16](https://github.com/ZohaibKhanDev/Background-Remover/blob/master/screenshots/16.png) | ![Screenshot 17](https://github.com/ZohaibKhanDev/Background-Remover/blob/master/screenshots/17.png) | ![Screenshot 18](https://github.com/ZohaibKhanDev/Background-Remover/blob/master/screenshots/18.png) |
+| --- | --- | --- |
+| ![Screenshot 19](https://github.com/ZohaibKhanDev/Background-Remover/blob/master/screenshots/19.png) | ![Screenshot 20](https://github.com/ZohaibKhanDev/Background-Remover/blob/master/screenshots/14.png) | ![Screenshot 21](https://github.com/ZohaibKhanDev/Background-Remover/blob/master/screenshots/21.png) |
+| --- | --- | --- |
+| ![Screenshot 22](https://github.com/ZohaibKhanDev/Background-Remover/blob/master/screenshots/22.png) | ![Screenshot 23](https://github.com/ZohaibKhanDev/Background-Remover/blob/master/screenshots/23.png) | ![Screenshot 24](https://github.com/ZohaibKhanDev/Background-Remover/blob/master/screenshots/24.png) | ![Screenshot 25](https://github.com/ZohaibKhanDev/Background-Remover/blob/master/screenshots/25.png)
