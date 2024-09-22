@@ -1045,7 +1045,7 @@ fun CreateScreen(navController: NavController) {
                                     modifier = Modifier
                                         .width(80.dp)
                                         .clickable {
-                                            InstagramStoryLauncher.launch("image/*")
+                                            navController.navigate(Screens.InstagramStory.route)
                                         }
                                         .height(140.dp)
                                         .border(
@@ -1077,7 +1077,7 @@ fun CreateScreen(navController: NavController) {
                                 Box(
                                     modifier = Modifier
                                         .size(100.dp)
-                                        .clickable { InstagramPostLauncher.launch("image/*") }
+                                        .clickable { navController.navigate(Screens.InstagramPost.route) }
                                         .border(
                                             BorderStroke(1.dp, color = Color.Gray),
                                             shape = RoundedCornerShape(12.dp)
@@ -1107,7 +1107,9 @@ fun CreateScreen(navController: NavController) {
                                 Box(
                                     modifier = Modifier
                                         .width(80.dp)
-                                        .clickable { InstagramReelLauncher.launch("image/*") }
+                                        .clickable {
+                                            navController.navigate(Screens.InstagramReel.route)
+                                        }
                                         .height(120.dp)
                                         .border(
                                             BorderStroke(1.dp, color = Color.Gray),
@@ -1169,7 +1171,9 @@ fun CreateScreen(navController: NavController) {
                                 Box(
                                     modifier = Modifier
                                         .width(80.dp)
-                                        .clickable { TiktokVideoLauncher.launch("image/*") }
+                                        .clickable {
+                                            navController.navigate(Screens.TiktokVideo.route)
+                                        }
                                         .height(140.dp)
                                         .border(
                                             BorderStroke(1.dp, color = Color.Gray),
@@ -1200,7 +1204,9 @@ fun CreateScreen(navController: NavController) {
                                 Box(
                                     modifier = Modifier
                                         .width(80.dp)
-                                        .clickable { FacebookStoryLauncher.launch("image/*") }
+                                        .clickable {
+                                            navController.navigate(Screens.FacebookStory.route)
+                                        }
                                         .height(160.dp)
                                         .border(
                                             BorderStroke(1.dp, color = Color.Gray),
@@ -1231,7 +1237,9 @@ fun CreateScreen(navController: NavController) {
                                 Box(
                                     modifier = Modifier
                                         .width(100.dp)
-                                        .clickable { TiktokAdLauncher.launch("image/*") }
+                                        .clickable {
+                                            navController.navigate(Screens.TiktokAdd.route)
+                                        }
                                         .height(160.dp)
                                         .border(
                                             BorderStroke(1.dp, color = Color.Gray),

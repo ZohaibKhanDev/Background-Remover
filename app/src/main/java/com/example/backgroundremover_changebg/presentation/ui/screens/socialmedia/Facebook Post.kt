@@ -41,19 +41,18 @@ import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Redo
 import androidx.compose.material.icons.filled.RemoveCircle
-import androidx.compose.material.icons.filled.Undo
 import androidx.compose.material.icons.outlined.Add
 import androidx.compose.material.icons.outlined.Brush
-import androidx.compose.material.icons.outlined.Edit
 import androidx.compose.material.icons.outlined.EmojiEmotions
 import androidx.compose.material.icons.outlined.Filter
 import androidx.compose.material.icons.outlined.Flip
 import androidx.compose.material.icons.outlined.Layers
+import androidx.compose.material.icons.outlined.Redo
 import androidx.compose.material.icons.outlined.RotateLeft
 import androidx.compose.material.icons.outlined.StickyNote2
 import androidx.compose.material.icons.outlined.TextFields
+import androidx.compose.material.icons.outlined.Undo
 import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.BottomAppBar
 import androidx.compose.material3.ExperimentalMaterial3Api
@@ -93,7 +92,6 @@ import androidx.compose.ui.viewinterop.AndroidView
 import androidx.navigation.NavController
 import coil.compose.AsyncImage
 import com.example.backgroundremover_changebg.R
-import com.example.backgroundremover_changebg.presentation.ui.navigation.Screens
 import com.example.backgroundremover_changebg.presentation.viewmodel.MainViewModel
 import dev.eren.removebg.RemoveBg
 import ja.burhanrashid52.photoeditor.PhotoEditor
@@ -175,6 +173,7 @@ fun Facebook_Post(navController: NavController) {
         isBlurred = true
     }
 
+
     Scaffold(topBar = {
         TopAppBar(title = {}, navigationIcon = {
             Text(text = "Cancel",
@@ -193,14 +192,22 @@ fun Facebook_Post(navController: NavController) {
                 })
 
             Spacer(modifier = Modifier.width(12.dp))
-            Icon(imageVector = Icons.Outlined.RotateLeft,
-                contentDescription = "Rotate",
+            Icon(imageVector = Icons.Outlined.Undo,
+                contentDescription = "Undo",
                 modifier = Modifier
-                    .rotate(180f)
                     .clickable {
-                        photoEditor?.setFilterEffect(PhotoFilter.ROTATE)
-                        saveStateToUndoStack(undoStack, bgbitmap)
-                    })
+                        photoEditor?.redo()
+                    }
+            )
+
+            Spacer(modifier = Modifier.width(12.dp))
+            Icon(imageVector = Icons.Outlined.Redo,
+                contentDescription = "Redo",
+                modifier = Modifier
+                    .clickable {
+                        photoEditor?.undo()
+                    }
+            )
         })
     }, bottomBar = {
 
@@ -208,7 +215,7 @@ fun Facebook_Post(navController: NavController) {
             BottomAppBar(
                 modifier = Modifier
                     .fillMaxWidth()
-                    .height(70.dp),
+                    .height(120.dp),
                 containerColor = Color.White
             ) {
                 if (eraser) {
@@ -235,18 +242,14 @@ fun Facebook_Post(navController: NavController) {
 
                 if (filter) {
                     LazyRow(
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .height(100.dp),
-                        horizontalArrangement = Arrangement.SpaceBetween,
+                        modifier = Modifier.fillMaxSize(),
+                        horizontalArrangement = Arrangement.spacedBy(100.dp),
                         verticalAlignment = Alignment.CenterVertically
                     ) {
                         item {
                             Box(
                                 modifier = Modifier
-                                    .border(
-                                        BorderStroke(2.dp, color = Color.White), shape = CircleShape
-                                    )
+                                    .clip(CircleShape)
                                     .size(70.dp)
                                     .clickable {
                                         photoEditor?.setFilterEffect(PhotoFilter.AUTO_FIX)
@@ -267,9 +270,7 @@ fun Facebook_Post(navController: NavController) {
 
                             Box(
                                 modifier = Modifier
-                                    .border(
-                                        BorderStroke(2.dp, color = Color.White), shape = CircleShape
-                                    )
+                                    .clip(CircleShape)
                                     .size(70.dp)
                                     .clickable {
                                         photoEditor?.setFilterEffect(PhotoFilter.TINT)
@@ -290,9 +291,7 @@ fun Facebook_Post(navController: NavController) {
 
                             Box(
                                 modifier = Modifier
-                                    .border(
-                                        BorderStroke(2.dp, color = Color.White), shape = CircleShape
-                                    )
+                                    .clip(CircleShape)
                                     .size(70.dp)
                                     .clickable {
                                         photoEditor?.setFilterEffect(PhotoFilter.VIGNETTE)
@@ -313,9 +312,7 @@ fun Facebook_Post(navController: NavController) {
 
                             Box(
                                 modifier = Modifier
-                                    .border(
-                                        BorderStroke(2.dp, color = Color.White), shape = CircleShape
-                                    )
+                                    .clip(CircleShape)
                                     .size(70.dp)
                                     .clickable {
                                         photoEditor?.setFilterEffect(PhotoFilter.CONTRAST)
@@ -335,9 +332,7 @@ fun Facebook_Post(navController: NavController) {
 
                             Box(
                                 modifier = Modifier
-                                    .border(
-                                        BorderStroke(2.dp, color = Color.White), shape = CircleShape
-                                    )
+                                    .clip(CircleShape)
                                     .size(70.dp)
                                     .clickable {
                                         photoEditor?.setFilterEffect(PhotoFilter.BLACK_WHITE)
@@ -358,9 +353,7 @@ fun Facebook_Post(navController: NavController) {
 
                             Box(
                                 modifier = Modifier
-                                    .border(
-                                        BorderStroke(2.dp, color = Color.White), shape = CircleShape
-                                    )
+                                    .clip(CircleShape)
                                     .size(70.dp)
                                     .clickable {
                                         photoEditor?.setFilterEffect(PhotoFilter.BRIGHTNESS)
@@ -380,9 +373,7 @@ fun Facebook_Post(navController: NavController) {
 
                             Box(
                                 modifier = Modifier
-                                    .border(
-                                        BorderStroke(2.dp, color = Color.White), shape = CircleShape
-                                    )
+                                    .clip(CircleShape)
                                     .size(70.dp)
                                     .clickable {
                                         photoEditor?.setFilterEffect(PhotoFilter.CROSS_PROCESS)
@@ -403,9 +394,7 @@ fun Facebook_Post(navController: NavController) {
 
                             Box(
                                 modifier = Modifier
-                                    .border(
-                                        BorderStroke(2.dp, color = Color.White), shape = CircleShape
-                                    )
+                                    .clip(CircleShape)
                                     .size(70.dp)
                                     .clickable {
                                         photoEditor?.setFilterEffect(PhotoFilter.DOCUMENTARY)
@@ -426,9 +415,7 @@ fun Facebook_Post(navController: NavController) {
 
                             Box(
                                 modifier = Modifier
-                                    .border(
-                                        BorderStroke(2.dp, color = Color.White), shape = CircleShape
-                                    )
+                                    .clip(CircleShape)
                                     .size(70.dp)
                                     .clickable {
                                         photoEditor?.setFilterEffect(PhotoFilter.TEMPERATURE)
@@ -463,12 +450,11 @@ fun Facebook_Post(navController: NavController) {
         ) {
             Box(
                 modifier = Modifier
-                    .fillMaxWidth()
-                    .height(600.dp)
+                    .width(1200.dp)
+                    .height(630.dp)
                     .border(BorderStroke(1.dp, Color.Gray), shape = RoundedCornerShape(12.dp))
                     .clip(RoundedCornerShape(12.dp))
-                    .background(Color.White)
-                    .padding(17.dp),
+                    .background(Color.White),
                 contentAlignment = Alignment.Center
             ) {
                 if (!isBlurred) {
@@ -1005,7 +991,7 @@ fun ToolBoxItem(icon: ImageVector, label: String, onClick: () -> Unit) {
 }
 
 
-private fun decodeSampledBitmapFromResource(
+fun decodeSampledBitmapFromResource(
     res: Resources, resId: Int, reqWidth: Int, reqHeight: Int
 ): Bitmap? {
     val options = BitmapFactory.Options().apply {

@@ -4,17 +4,8 @@ import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
-import androidx.compose.foundation.Image
-import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.shadow
-import androidx.compose.ui.layout.ContentScale
-import androidx.compose.ui.res.painterResource
-import androidx.compose.ui.unit.dp
-import androidx.core.net.toUri
 import com.example.backgroundremover_changebg.di.appModule
 import com.example.backgroundremover_changebg.presentation.ui.navigation.NavEntry
-import com.example.backgroundremover_changebg.presentation.ui.screens.socialmedia.PhotoEditorScreen
 import com.example.backgroundremover_changebg.ui.theme.BackgroundRemoverChangebgTheme
 import org.koin.android.ext.koin.androidContext
 import org.koin.android.ext.koin.androidLogger
