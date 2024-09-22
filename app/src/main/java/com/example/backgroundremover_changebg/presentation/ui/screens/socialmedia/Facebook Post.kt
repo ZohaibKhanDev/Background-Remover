@@ -6,10 +6,13 @@ import android.content.Context
 import android.content.res.Resources
 import android.graphics.Bitmap
 import android.graphics.BitmapFactory
+import android.net.Uri
 import android.os.Environment
 import android.provider.MediaStore
 import android.util.Size
 import android.widget.ImageView
+import androidx.activity.compose.rememberLauncherForActivityResult
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.animation.core.Animatable
 import androidx.compose.animation.core.LinearEasing
 import androidx.compose.animation.core.tween
@@ -41,6 +44,7 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Redo
 import androidx.compose.material.icons.filled.RemoveCircle
 import androidx.compose.material.icons.filled.Undo
+import androidx.compose.material.icons.outlined.Add
 import androidx.compose.material.icons.outlined.Brush
 import androidx.compose.material.icons.outlined.Edit
 import androidx.compose.material.icons.outlined.EmojiEmotions
@@ -56,6 +60,7 @@ import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.ModalBottomSheet
 import androidx.compose.material3.Scaffold
+import androidx.compose.material3.Slider
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.material3.TextField
@@ -88,7 +93,9 @@ import androidx.compose.ui.viewinterop.AndroidView
 import androidx.navigation.NavController
 import coil.compose.AsyncImage
 import com.example.backgroundremover_changebg.R
+import com.example.backgroundremover_changebg.presentation.ui.navigation.Screens
 import com.example.backgroundremover_changebg.presentation.viewmodel.MainViewModel
+import dev.eren.removebg.RemoveBg
 import ja.burhanrashid52.photoeditor.PhotoEditor
 import ja.burhanrashid52.photoeditor.PhotoEditorView
 import ja.burhanrashid52.photoeditor.PhotoFilter
@@ -119,11 +126,36 @@ fun Facebook_Post(navController: NavController) {
     var filter by remember { mutableStateOf(false) }
     var colorshowDialog by remember { mutableStateOf(false) }
     var emojiShowDialog by remember { mutableStateOf(false) }
+    var eraser by remember { mutableStateOf(false) }
     var textInput by remember { mutableStateOf("") }
     var textColor by remember { mutableStateOf(Color.Black) }
     val undoStack = remember { mutableStateListOf<Bitmap>() }
+    var sliderPosition by remember { mutableStateOf(0f) }
+    var Facebook_Post_Image by remember { mutableStateOf<Bitmap?>(null) }
+    val coroutineScope = rememberCoroutineScope()
+    val sharedViewModel: MainViewModel = koinInject()
+    val Facebook_Post_Launcher = rememberLauncherForActivityResult(
+        contract = ActivityResultContracts.GetContent()
+    ) { uri: Uri? ->
+        uri?.let {
+            val bitmap = BitmapFactory.decodeStream(
+                context.contentResolver.openInputStream(it)
+            )
+            Facebook_Post_Image = bitmap
+            sharedViewModel.setOriginalBitmap(Facebook_Post_Image!!)
 
-
+            coroutineScope.launch {
+                val remover = RemoveBg(context)
+                remover.clearBackground(Facebook_Post_Image!!).collect { output ->
+                    Facebook_Post_Image = output
+                    sharedViewModel.setBgRemovedBitmap(Facebook_Post_Image!!)
+                }
+            }
+        }
+    }
+    LaunchedEffect(Unit) {
+        Facebook_Post_Image = null
+    }
     LaunchedEffect(Unit) {
         launch {
             while (!isBlurred) {
@@ -137,7 +169,7 @@ fun Facebook_Post(navController: NavController) {
                 )
             }
         }
-        delay(7000)
+        delay(4000)
         isBlurred = true
     }
 
@@ -147,6 +179,7 @@ fun Facebook_Post(navController: NavController) {
                 fontSize = 16.sp,
                 fontWeight = FontWeight.SemiBold,
                 modifier = Modifier.clickable {
+                    Facebook_Post_Image = null
                     navController.navigateUp()
                 })
         }, actions = {
@@ -168,233 +201,253 @@ fun Facebook_Post(navController: NavController) {
                     })
         })
     }, bottomBar = {
-        if (filter) {
-            BottomAppBar {
-                LazyRow(
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .clickable {
-/*
-                        photoEditor?.setFilterEffect(PhotoFilter.TINT)
-*//*
-                                                photoEditor?.setFilterEffect(PhotoFilter.VIGNETTE)
-                        */
 
-                            /*photoEditor?.setFilterEffect(PhotoFilter.CONTRAST)*//*photoEditor?.setFilterEffect(PhotoFilter.AUTO_FIX)*//*photoEditor?.setFilterEffect(PhotoFilter.BLACK_WHITE)*//*photoEditor?.setFilterEffect(PhotoFilter.BRIGHTNESS)*//*photoEditor?.setFilterEffect(PhotoFilter.CROSS_PROCESS)*//*photoEditor?.setFilterEffect(PhotoFilter.DOCUMENTARY)*//*photoEditor?.setFilterEffect(PhotoFilter.TEMPERATURE)*/
-                        },
-                    horizontalArrangement = Arrangement.SpaceBetween,
-                    verticalAlignment = Alignment.CenterVertically
-                ) {
-                    item {
-                        Box(
-                            modifier = Modifier
-                                .border(
-                                    BorderStroke(2.dp, color = Color.White), shape = CircleShape
-                                )
-                                .size(70.dp)
-                                .clickable {
-                                    photoEditor?.setFilterEffect(PhotoFilter.AUTO_FIX)
-                                },
+        if (eraser || filter){
+            BottomAppBar(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .height(70.dp),
+                containerColor = Color.White
+            ) {
+                if (eraser) {
 
-                            contentAlignment = Alignment.Center
-                        ) {
-                            Image(
-                                painter = painterResource(id = R.drawable.autofix),
-                                contentDescription = "",
-                                modifier = Modifier
-                                    .fillMaxSize()
-                                    .clip(CircleShape),
-                                contentScale = ContentScale.Crop
-                            )
-                        }
+                    Column(
+                        modifier = Modifier.fillMaxWidth(),
+                        verticalArrangement = Arrangement.SpaceBetween,
+                        horizontalAlignment = Alignment.CenterHorizontally
+                    ) {
+                        Text(text = "Eraser Size", fontSize = 23.sp, fontWeight = FontWeight.SemiBold)
 
-
-                        Box(
-                            modifier = Modifier
-                                .border(
-                                    BorderStroke(2.dp, color = Color.White), shape = CircleShape
-                                )
-                                .size(70.dp)
-                                .clickable {
-                                    photoEditor?.setFilterEffect(PhotoFilter.TINT)
-                                },
-
-                            contentAlignment = Alignment.Center
-                        ) {
-                            Image(
-                                painter = painterResource(id = R.drawable.tint),
-                                contentDescription = "",
-                                modifier = Modifier
-                                    .fillMaxSize()
-                                    .clip(CircleShape),
-                                contentScale = ContentScale.Crop
-                            )
-                        }
-
-
-                        Box(
-                            modifier = Modifier
-                                .border(
-                                    BorderStroke(2.dp, color = Color.White), shape = CircleShape
-                                )
-                                .size(70.dp)
-                                .clickable {
-                                    photoEditor?.setFilterEffect(PhotoFilter.VIGNETTE)
-                                },
-
-                            contentAlignment = Alignment.Center
-                        ) {
-                            Image(
-                                painter = painterResource(id = R.drawable.vignette),
-                                contentDescription = "",
-                                modifier = Modifier
-                                    .fillMaxSize()
-                                    .clip(CircleShape),
-                                contentScale = ContentScale.Crop
-                            )
-                        }
-
-
-                        Box(
-                            modifier = Modifier
-                                .border(
-                                    BorderStroke(2.dp, color = Color.White), shape = CircleShape
-                                )
-                                .size(70.dp)
-                                .clickable {
-                                    photoEditor?.setFilterEffect(PhotoFilter.CONTRAST)
-                                },
-
-                            contentAlignment = Alignment.Center
-                        ) {
-                            Image(
-                                painter = painterResource(id = R.drawable.contrast),
-                                contentDescription = "",
-                                modifier = Modifier
-                                    .fillMaxSize()
-                                    .clip(CircleShape),
-                                contentScale = ContentScale.Crop
-                            )
-                        }
-
-                        Box(
-                            modifier = Modifier
-                                .border(
-                                    BorderStroke(2.dp, color = Color.White), shape = CircleShape
-                                )
-                                .size(70.dp)
-                                .clickable {
-                                    photoEditor?.setFilterEffect(PhotoFilter.BLACK_WHITE)
-                                },
-
-                            contentAlignment = Alignment.Center
-                        ) {
-                            Image(
-                                painter = painterResource(id = R.drawable.black_white),
-                                contentDescription = "",
-                                modifier = Modifier
-                                    .fillMaxSize()
-                                    .clip(CircleShape),
-                                contentScale = ContentScale.Crop
-                            )
-                        }
-
-
-                        Box(
-                            modifier = Modifier
-                                .border(
-                                    BorderStroke(2.dp, color = Color.White), shape = CircleShape
-                                )
-                                .size(70.dp)
-                                .clickable {
-                                    photoEditor?.setFilterEffect(PhotoFilter.BRIGHTNESS)
-                                },
-
-                            contentAlignment = Alignment.Center
-                        ) {
-                            Image(
-                                painter = painterResource(id = R.drawable.brightness),
-                                contentDescription = "",
-                                modifier = Modifier
-                                    .fillMaxSize()
-                                    .clip(CircleShape),
-                                contentScale = ContentScale.Crop
-                            )
-                        }
-
-                        Box(
-                            modifier = Modifier
-                                .border(
-                                    BorderStroke(2.dp, color = Color.White), shape = CircleShape
-                                )
-                                .size(70.dp)
-                                .clickable {
-                                    photoEditor?.setFilterEffect(PhotoFilter.CROSS_PROCESS)
-                                },
-
-                            contentAlignment = Alignment.Center
-                        ) {
-                            Image(
-                                painter = painterResource(id = R.drawable.cross_process),
-                                contentDescription = "",
-                                modifier = Modifier
-                                    .fillMaxSize()
-                                    .clip(CircleShape),
-                                contentScale = ContentScale.Crop
-                            )
-                        }
-
-
-                        Box(
-                            modifier = Modifier
-                                .border(
-                                    BorderStroke(2.dp, color = Color.White), shape = CircleShape
-                                )
-                                .size(70.dp)
-                                .clickable {
-                                    photoEditor?.setFilterEffect(PhotoFilter.DOCUMENTARY)
-                                },
-
-                            contentAlignment = Alignment.Center
-                        ) {
-                            Image(
-                                painter = painterResource(id = R.drawable.documentry),
-                                contentDescription = "",
-                                modifier = Modifier
-                                    .fillMaxSize()
-                                    .clip(CircleShape),
-                                contentScale = ContentScale.Crop
-                            )
-                        }
-
-
-                        Box(
-                            modifier = Modifier
-                                .border(
-                                    BorderStroke(2.dp, color = Color.White), shape = CircleShape
-                                )
-                                .size(70.dp)
-                                .clickable {
-                                    photoEditor?.setFilterEffect(PhotoFilter.TEMPERATURE)
-                                },
-
-                            contentAlignment = Alignment.Center
-                        ) {
-                            Image(
-                                painter = painterResource(id = R.drawable.temperature),
-                                contentDescription = "",
-                                modifier = Modifier
-                                    .fillMaxSize()
-                                    .clip(CircleShape),
-                                contentScale = ContentScale.Crop
-                            )
-                        }
-
+                        Slider(value = sliderPosition, onValueChange = { newPosition ->
+                            sliderPosition = newPosition
+                            photoEditor?.setBrushEraserSize(newPosition)
+                        })
                     }
 
                 }
+
+
+                if (filter) {
+                    LazyRow(
+                        modifier = Modifier.fillMaxWidth(),
+                        horizontalArrangement = Arrangement.SpaceBetween,
+                        verticalAlignment = Alignment.CenterVertically
+                    ) {
+                        item {
+                            Box(
+                                modifier = Modifier
+                                    .border(
+                                        BorderStroke(2.dp, color = Color.White), shape = CircleShape
+                                    )
+                                    .size(70.dp)
+                                    .clickable {
+                                        photoEditor?.setFilterEffect(PhotoFilter.AUTO_FIX)
+                                    },
+
+                                contentAlignment = Alignment.Center
+                            ) {
+                                Image(
+                                    painter = painterResource(id = R.drawable.autofix),
+                                    contentDescription = "",
+                                    modifier = Modifier
+                                        .fillMaxSize()
+                                        .clip(CircleShape),
+                                    contentScale = ContentScale.Crop
+                                )
+                            }
+
+
+                            Box(
+                                modifier = Modifier
+                                    .border(
+                                        BorderStroke(2.dp, color = Color.White), shape = CircleShape
+                                    )
+                                    .size(70.dp)
+                                    .clickable {
+                                        photoEditor?.setFilterEffect(PhotoFilter.TINT)
+                                    },
+
+                                contentAlignment = Alignment.Center
+                            ) {
+                                Image(
+                                    painter = painterResource(id = R.drawable.tint),
+                                    contentDescription = "",
+                                    modifier = Modifier
+                                        .fillMaxSize()
+                                        .clip(CircleShape),
+                                    contentScale = ContentScale.Crop
+                                )
+                            }
+
+
+                            Box(
+                                modifier = Modifier
+                                    .border(
+                                        BorderStroke(2.dp, color = Color.White), shape = CircleShape
+                                    )
+                                    .size(70.dp)
+                                    .clickable {
+                                        photoEditor?.setFilterEffect(PhotoFilter.VIGNETTE)
+                                    },
+
+                                contentAlignment = Alignment.Center
+                            ) {
+                                Image(
+                                    painter = painterResource(id = R.drawable.vignette),
+                                    contentDescription = "",
+                                    modifier = Modifier
+                                        .fillMaxSize()
+                                        .clip(CircleShape),
+                                    contentScale = ContentScale.Crop
+                                )
+                            }
+
+
+                            Box(
+                                modifier = Modifier
+                                    .border(
+                                        BorderStroke(2.dp, color = Color.White), shape = CircleShape
+                                    )
+                                    .size(70.dp)
+                                    .clickable {
+                                        photoEditor?.setFilterEffect(PhotoFilter.CONTRAST)
+                                    },
+
+                                contentAlignment = Alignment.Center
+                            ) {
+                                Image(
+                                    painter = painterResource(id = R.drawable.contrast),
+                                    contentDescription = "",
+                                    modifier = Modifier
+                                        .fillMaxSize()
+                                        .clip(CircleShape),
+                                    contentScale = ContentScale.Crop
+                                )
+                            }
+
+                            Box(
+                                modifier = Modifier
+                                    .border(
+                                        BorderStroke(2.dp, color = Color.White), shape = CircleShape
+                                    )
+                                    .size(70.dp)
+                                    .clickable {
+                                        photoEditor?.setFilterEffect(PhotoFilter.BLACK_WHITE)
+                                    },
+
+                                contentAlignment = Alignment.Center
+                            ) {
+                                Image(
+                                    painter = painterResource(id = R.drawable.black_white),
+                                    contentDescription = "",
+                                    modifier = Modifier
+                                        .fillMaxSize()
+                                        .clip(CircleShape),
+                                    contentScale = ContentScale.Crop
+                                )
+                            }
+
+
+                            Box(
+                                modifier = Modifier
+                                    .border(
+                                        BorderStroke(2.dp, color = Color.White), shape = CircleShape
+                                    )
+                                    .size(70.dp)
+                                    .clickable {
+                                        photoEditor?.setFilterEffect(PhotoFilter.BRIGHTNESS)
+                                    },
+
+                                contentAlignment = Alignment.Center
+                            ) {
+                                Image(
+                                    painter = painterResource(id = R.drawable.brightness),
+                                    contentDescription = "",
+                                    modifier = Modifier
+                                        .fillMaxSize()
+                                        .clip(CircleShape),
+                                    contentScale = ContentScale.Crop
+                                )
+                            }
+
+                            Box(
+                                modifier = Modifier
+                                    .border(
+                                        BorderStroke(2.dp, color = Color.White), shape = CircleShape
+                                    )
+                                    .size(70.dp)
+                                    .clickable {
+                                        photoEditor?.setFilterEffect(PhotoFilter.CROSS_PROCESS)
+                                    },
+
+                                contentAlignment = Alignment.Center
+                            ) {
+                                Image(
+                                    painter = painterResource(id = R.drawable.cross_process),
+                                    contentDescription = "",
+                                    modifier = Modifier
+                                        .fillMaxSize()
+                                        .clip(CircleShape),
+                                    contentScale = ContentScale.Crop
+                                )
+                            }
+
+
+                            Box(
+                                modifier = Modifier
+                                    .border(
+                                        BorderStroke(2.dp, color = Color.White), shape = CircleShape
+                                    )
+                                    .size(70.dp)
+                                    .clickable {
+                                        photoEditor?.setFilterEffect(PhotoFilter.DOCUMENTARY)
+                                    },
+
+                                contentAlignment = Alignment.Center
+                            ) {
+                                Image(
+                                    painter = painterResource(id = R.drawable.documentry),
+                                    contentDescription = "",
+                                    modifier = Modifier
+                                        .fillMaxSize()
+                                        .clip(CircleShape),
+                                    contentScale = ContentScale.Crop
+                                )
+                            }
+
+
+                            Box(
+                                modifier = Modifier
+                                    .border(
+                                        BorderStroke(2.dp, color = Color.White), shape = CircleShape
+                                    )
+                                    .size(70.dp)
+                                    .clickable {
+                                        photoEditor?.setFilterEffect(PhotoFilter.TEMPERATURE)
+                                    },
+
+                                contentAlignment = Alignment.Center
+                            ) {
+                                Image(
+                                    painter = painterResource(id = R.drawable.temperature),
+                                    contentDescription = "",
+                                    modifier = Modifier
+                                        .fillMaxSize()
+                                        .clip(CircleShape),
+                                    contentScale = ContentScale.Crop
+                                )
+                            }
+
+                        }
+
+
+                    }
+                }
             }
         }
+
+
+
     }) {
         Column(
             modifier = Modifier
@@ -412,7 +465,7 @@ fun Facebook_Post(navController: NavController) {
                 contentAlignment = Alignment.Center
             ) {
                 if (!isBlurred) {
-                    bitmap?.let {
+                    Facebook_Post_Image?.let {
                         Image(
                             bitmap = it.asImageBitmap(),
                             contentDescription = "",
@@ -496,8 +549,9 @@ fun Facebook_Post(navController: NavController) {
                 }
 
                 item {
-                    ToolBoxItem(icon = Icons.Outlined.Edit, label = "Edit") {
+                    ToolBoxItem(icon = Icons.Outlined.Add, label = "Insert") {
                         filter = false
+                        Facebook_Post_Launcher.launch("image/*")
                     }
                 }
 
@@ -521,6 +575,7 @@ fun Facebook_Post(navController: NavController) {
                     ToolBoxItem(icon = Icons.Default.RemoveCircle, label = "Eraser") {
                         photoEditor?.setBrushDrawingMode(false)
                         photoEditor?.brushEraser()
+                        eraser = true
                     }
                 }
 
@@ -592,13 +647,12 @@ fun Facebook_Post(navController: NavController) {
                                 verticalAlignment = Alignment.CenterVertically
                             ) {
                                 items(color) {
-                                    Box(
-                                        modifier = Modifier
-                                            .size(20.dp)
-                                            .background(it)
-                                            .clickable {
-                                                textColor=it
-                                            })
+                                    Box(modifier = Modifier
+                                        .size(20.dp)
+                                        .background(it)
+                                        .clickable {
+                                            textColor = it
+                                        })
                                 }
 
                             }
@@ -920,9 +974,9 @@ fun ToolBoxItem(icon: ImageVector, label: String, onClick: () -> Unit) {
     Box(modifier = Modifier
         .width(50.dp)
         .clickable {
-            select=true
+            select = true
             onClick()
-            select=false
+            select = false
         }
         .background(Color.White)
         .height(58.dp), contentAlignment = Alignment.Center) {

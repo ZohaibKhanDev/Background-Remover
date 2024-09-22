@@ -1139,7 +1139,7 @@ fun CreateScreen(navController: NavController) {
                                     modifier = Modifier
                                         .width(100.dp)
                                         .height(100.dp)
-                                        .clickable { Facebook_Post_Launcher.launch("image/*") }
+                                        .clickable { navController.navigate(Screens.FacebookPost.route) }
                                         .border(
                                             BorderStroke(1.dp, color = Color.Gray),
                                             shape = RoundedCornerShape(12.dp)
