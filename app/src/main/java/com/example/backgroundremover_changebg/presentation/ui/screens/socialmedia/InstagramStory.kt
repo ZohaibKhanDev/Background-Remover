@@ -32,8 +32,10 @@ import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.foundation.lazy.grid.items
 import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.RemoveCircle
 import androidx.compose.material.icons.outlined.Add
@@ -432,6 +434,7 @@ fun InstagramStory(navController: NavController) {
 
 
     }) {
+        val verticalScroll = rememberScrollState()
         Column(
             modifier = Modifier
                 .fillMaxSize()
@@ -441,7 +444,7 @@ fun InstagramStory(navController: NavController) {
                 modifier = Modifier
                     .padding(17.dp)
                     .width(1080.dp)
-                    .height(1920.dp)
+                    .height(600.dp)
                     .border(BorderStroke(1.dp, Color.Gray), shape = RoundedCornerShape(12.dp))
                     .clip(RoundedCornerShape(12.dp))
                     .background(Color.White),

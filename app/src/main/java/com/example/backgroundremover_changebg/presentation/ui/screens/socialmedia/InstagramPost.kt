@@ -441,7 +441,7 @@ fun InstagramPost(navController: NavController) {
                 modifier = Modifier
                     .padding(17.dp)
                     .width(1080.dp)
-                    .height(1080.dp)
+                    .height(500.dp)
                     .border(BorderStroke(1.dp, Color.Gray), shape = RoundedCornerShape(12.dp))
                     .clip(RoundedCornerShape(12.dp))
                     .background(Color.White),
