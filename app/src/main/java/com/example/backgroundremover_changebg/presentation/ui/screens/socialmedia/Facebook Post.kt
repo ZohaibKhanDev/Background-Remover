@@ -921,7 +921,14 @@ val stickerList = listOf(
     Sticker(R.drawable.sticker3),
     Sticker(R.drawable.sticker4),
     Sticker(R.drawable.sticker5),
-    Sticker(R.drawable.sticker6)
+    Sticker(R.drawable.sticker7),
+    Sticker(R.drawable.sticker8),
+    Sticker(R.drawable.sticker9),
+    Sticker(R.drawable.sticker10),
+    Sticker(R.drawable.sticker11),
+    Sticker(R.drawable.sticker12),
+    Sticker(R.drawable.sticker13),
+    Sticker(R.drawable.sticker14),
 )
 
 fun PhotoEditor.addText(text: String, color: Color) {
