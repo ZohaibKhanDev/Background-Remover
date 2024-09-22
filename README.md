@@ -7,6 +7,10 @@
 - ** Circular Cropping **
 - ** High-Quality Exports **
 - ** MediaStore Integration **
+- ** Text Overlay **
+- ** Layered Editing **
+- ** Shape and Icon Library **
+- ** Custom Filters & Effects **
 
 ## 🤝 Connect with Me
 Let's chat about potential projects, job opportunities, or any other collaboration! Feel free to connect with me through the following channels:
